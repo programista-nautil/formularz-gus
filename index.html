@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz GUS - Dostępność Architektoniczna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label,
+        p {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+            color: #333;
+        }
+
+        input[type="number"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .helper-text {
+            font-size: 14px;
+            /* Mniejsza czcionka */
+            color: #777;
+            /* Wyszarzony tekst */
+            margin-top: 5px;
+        }
+
+        .hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease-out, max-height 0.3s ease-out;
+        }
+
+        .visible {
+            opacity: 1;
+            max-height: 100px;
+            transition: opacity 0.3s ease-in, max-height 0.3s ease-in;
+        }
+
+        .small-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+
+        .toggle-button {
+            font-size: 12px;
+            background-color: transparent;
+            border: none;
+            background-color: gray;
+            cursor: pointer;
+            width: 20%;
+            white-space: nowrap;
+        }
+
+        .toggle-button:hover {
+            background-color: darkgray;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Odstęp między tekstem a przyciskiem */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Dostępność Architektoniczna</h2>
+        <form id="gusForm">
+
+            <label for="num_buildings">Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub obsługę
+                interesantów:</label>
+            <input type="number" id="num_buildings" name="num_buildings" required>
+
+            <p>1. Czy podmiot zapewnia wolne od barier poziome i pionowe przestrzenie komunikacyjne?</p>
+            <div class="radio-group">
+                <input type="radio" name="barriers" value="TAK" required
+                    onclick="toggleInput('barrier_count_count_wrapper','barrier_count', false)">
+                TAK
+                <input type="radio" name="barriers" value="NIE"
+                    onclick="toggleInput('barrier_count_count_wrapper','barrier_count', false)"> NIE
+                <input type="radio" name="barriers" value="Częściowo"
+                    onclick="toggleInput('barrier_count_count_wrapper', 'barrier_count',true)"> W
+                części budynków tak, w części nie
+            </div>
+            <div id="barrier_count_count_wrapper" class="hidden">
+                <label for="barrier_count" class="helper-text">
+                    W przypadku odpowiedzi „W części budynków tak, w części nie” – prosimy o podanie liczby budynków,
+                    w których podmiot zapewnia wolne od barier poziome i pionowe przestrzenie komunikacyjne:
+                </label>
+                <input type="number" id="barrier_count" name="barrier_count" disabled>
+            </div>
+
+
+            <p>2. Czy podmiot zapewnia dostęp do wszystkich pomieszczeń (z wyłączeniem technicznych)?</p>
+            <div class="radio-group">
+                <input type="radio" name="room_access" value="TAK" required
+                    onclick="toggleInput('room_access_count_wrapper','room_access_count', false)"> TAK
+                <input type="radio" name="room_access" value="NIE"
+                    onclick="toggleInput('room_access_count_wrapper','room_access_count', false)">
+                NIE
+                <input type="radio" name="room_access" value="Częściowo"
+                    onclick="toggleInput('room_access_count_wrapper','room_access_count', true)"> W części budynków tak,
+                w części nie
+            </div>
+            <div id="room_access_count_wrapper" class="hidden">
+                <label for="room_access_count" class="helper-text">
+                    W przypadku odpowiedzi „W części budynków tak, w części nie” – prosimy o podanie liczby budynków,
+                    w których podmiot umożliwia dostęp do wszystkich pomieszczeń, z wyłączeniem pomieszczeń
+                    technicznych:
+                </label>
+                <input type="number" id="room_access_count" name="room_access_count" disabled>
+            </div>
+
+
+            <p>3. Czy podmiot zapewnia informację na temat rozkładu pomieszczeń?</p>
+            <div class="radio-group">
+                <input type="radio" name="layout_info" value="TAK" required
+                    onclick="toggleInput('layout_info_count_wrapper','layout_info_count', false)"> TAK
+                <input type="radio" name="layout_info" value="NIE"
+                    onclick="toggleInput('layout_info_count_wrapper', 'layout_info_count',false)">
+                NIE
+                <input type="radio" name="layout_info" value="Częściowo"
+                    onclick="toggleInput('layout_info_count_wrapper','layout_info_count', true)"> W części budynków tak,
+                w części nie
+            </div>
+            <div id="layout_info_count_wrapper" class="hidden">
+                <label for="layout_info_count" class="helper-text">W przypadku odpowiedzi „W części budynków tak, w
+                    części
+                    nie” – prosimy o
+                    podanie liczby budynków, w których podmiot zapewnia informację na temat rozkładu pomieszczeń, co
+                    najmniej w sposób wizualny i dotykowy lub głosowy:</label>
+                <input type="number" id="layout_info_count" name="layout_info_count" disabled>
+            </div>
+
+            <p>4. Czy podmiot umożliwia wstęp osobie z psem asystującym?</p>
+            <div class="radio-group">
+                <input type="radio" name="dog_access" value="TAK" required
+                    onclick="toggleInput('dog_access_count_wrapper','dog_access_count', false)"> TAK
+                <input type="radio" name="dog_access" value="NIE"
+                    onclick="toggleInput('dog_access_count_wrapper','dog_access_count', false)"> NIE
+                <input type="radio" name="dog_access" value="Częściowo"
+                    onclick="toggleInput('dog_access_count_wrapper', 'dog_access_count',true)">
+                W części budynków tak, w części nie
+            </div>
+            <div id="dog_access_count_wrapper" class="hidden">
+                <label for="dog_access_count" class="helper-text">W przypadku wskazania odpowiedzi „W części budynków
+                    tak, w
+                    części nie” –
+                    prosimy o podanie liczby budynków, do których podmiot zapewnia wstęp osobie korzystającej z psa
+                    asystującego:
+                </label>
+                <input type="number" id="dog_access_count" name="dog_access_count" disabled>
+            </div>
+
+            <p>5. Czy podmiot zapewnia możliwość ewakuacji osobom ze szczególnymi potrzebami?</p>
+            <div class="radio-group">
+                <input type="radio" name="evacuation" value="TAK" required
+                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', false)"> TAK
+                <input type="radio" name="evacuation" value="NIE"
+                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', false)"> NIE
+                <input type="radio" name="evacuation" value="Częściowo"
+                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', true)">
+                W części budynków tak, w części nie
+            </div>
+            <div id="evacuation_count_wrapper" class="hidden">
+                <label for="evacuation_count" class="helper-text">W przypadku odpowiedzi „W części budynków tak, w
+                    części
+                    nie” – prosimy o
+                    podanie liczby budynków, w których podmiot zapewnia osobom ze szczególnymi potrzebami możliwość
+                    ewakuacji lub uratowania w inny sposób:</label>
+                <input type="number" id="evacuation_count" name="evacuation_count" disabled>
+            </div>
+
+            <div class="comment-header">
+                <label for="comments">
+                    Komentarze i uwagi dotyczące dostępności architektonicznej:
+                </label>
+                <button type="button" class="toggle-button" onclick="toggleHelperText()">Pokaż więcej</button>
+            </div>
+            <p id="helperText" class="small-text hidden">
+                Proszę zamieścić tu słowny opis dostępności architektonicznej, wykraczający poza informacje ujęte
+                powyżej – opis ten będzie stanowić część raportu, który są Państwo zobowiązani opublikować na swojej
+                stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
+                Informacji Publicznej – na swojej stronie internetowej.
+            </p>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+            <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
+            <input type="email" id="user_email" name="user_email" required>
+
+
+            <button type="submit">Wyślij</button>
+        </form>
+    </div>
+
+</body>
+<script>
+    document.getElementById("gusForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        console.log(data)
+
+        const response = await fetch("http://localhost:3000/send-form", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.text();
+        alert(result);
+    });
+
+    function toggleInput(wrapperId, inputId, isEnabled) {
+        const wrapper = document.getElementById(wrapperId);
+        const inputField = document.getElementById(inputId);
+
+        if (isEnabled) {
+            wrapper.classList.add("visible");
+            wrapper.classList.remove("hidden");
+            inputField.disabled = !isEnabled;
+            inputField.setAttribute("required", "true");
+        } else {
+            wrapper.classList.add("hidden");
+            wrapper.classList.remove("visible");
+            inputField.value = "";
+            inputField.removeAttribute("required");
+        }
+    }
+
+    function toggleHelperText() {
+        const helperText = document.getElementById("helperText");
+        const button = document.querySelector(".toggle-button");
+
+        if (helperText.classList.contains("hidden")) {
+            helperText.classList.remove("hidden");
+            helperText.classList.add("visible");
+            button.textContent = "Ukryj";
+        } else {
+            helperText.classList.remove("visible");
+            helperText.classList.add("hidden");
+            button.textContent = "Pokaż więcej";
+        }
+    }
+</script>
+
+</html>
