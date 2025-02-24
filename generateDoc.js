@@ -147,6 +147,59 @@ async function generateDocument(data) {
 			console.log('Dokument uzupełniony!')
 		}
 
+		// 🔹 Usuwanie pozostałych zmiennych {{tekst}}
+		const cleanRequests = []
+		const regex = /{{(.*?)}}/g
+
+		// 🔹 Iteracja przez wszystkie elementy dokumentu
+		doc.data.body.content.forEach(element => {
+			if (element.paragraph?.elements) {
+				let fullText = element.paragraph.elements.map(e => e.textRun?.content || '').join('')
+
+				let match
+				while ((match = regex.exec(fullText)) !== null) {
+					console.log(`Usuwanie pozostałej zmiennej: ${match[0]}`)
+					cleanRequests.push({
+						replaceAllText: {
+							containsText: { text: match[0], matchCase: false },
+							replaceText: '',
+						},
+					})
+				}
+			}
+
+			// 🔹 Sprawdzanie tabel
+			if (element.table) {
+				element.table.tableRows.forEach(row => {
+					row.tableCells.forEach(cell => {
+						let cellText = cell.content
+							.map(c => (c.paragraph?.elements ? c.paragraph.elements.map(e => e.textRun?.content || '').join('') : ''))
+							.join('')
+
+						let match
+						while ((match = regex.exec(cellText)) !== null) {
+							console.log(`Usuwanie pozostałej zmiennej w tabeli: ${match[0]}`)
+							cleanRequests.push({
+								replaceAllText: {
+									containsText: { text: match[0], matchCase: false },
+									replaceText: '',
+								},
+							})
+						}
+					})
+				})
+			}
+		})
+
+		// 🔹 Druga aktualizacja usuwająca pozostałe zmienne
+		if (cleanRequests.length > 0) {
+			await docs.documents.batchUpdate({
+				documentId: newDocId,
+				requestBody: { requests: cleanRequests },
+			})
+			console.log('Nieznane zmienne usunięte (również w tabelach)!')
+		}
+
 		return `https://docs.google.com/document/d/${newDocId}`
 	} catch (error) {
 		console.error('Błąd generowania dokumentu:', error)
