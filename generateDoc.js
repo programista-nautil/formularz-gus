@@ -43,49 +43,81 @@ async function generateDocument(data) {
 			return value === 'TAK' ? '☑' : '☐' // Uzupełniony lub pusty checkbox
 		}
 
+		function getSignLangCheckbox(selectedValue, checkboxValue) {
+			const valueMap = {
+				'od razu': 'od razu',
+				'1 dzień': 'w ciągu 1 dnia roboczego',
+				'2-3 dni': 'w ciągu 2-3 dni roboczych',
+				'powyżej 3 dni': 'powyżej 3 dni roboczych',
+			}
+
+			return valueMap[selectedValue] === checkboxValue ? '☑' : '☐'
+		}
+
 		// 🔹 Iteracja przez wszystkie elementy dokumentu
 		doc.data.body.content.forEach(element => {
-			if (element.paragraph?.elements) {
-				let fullText = element.paragraph.elements.map(e => e.textRun?.content || '').join('')
+			// if (element.paragraph?.elements) {
+			// 	let fullText = element.paragraph.elements.map(e => e.textRun?.content || '').join('')
 
-				Object.entries(data).forEach(([key, value]) => {
-					const variable = `{{${key}}}`
-					const yesCheckbox = `{{yes_checkbox_${key}}}`
-					const noCheckbox = `{{no_checkbox_${key}}}`
+			// 	Object.entries(data).forEach(([key, value]) => {
+			// 		const variable = `{{${key}}}`
+			// 		const yesCheckbox = `{{yes_checkbox_${key}}}`
+			// 		const noCheckbox = `{{no_checkbox_${key}}}`
 
-					// 🔹 Standardowe zmienne tekstowe
-					if (fullText.includes(variable)) {
-						console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
-						requests.push({
-							replaceAllText: {
-								containsText: { text: variable, matchCase: true },
-								replaceText: value || 'Brak danych',
-							},
-						})
-					}
+			// 		// 🔹 Standardowe zmienne tekstowe
+			// 		if (fullText.includes(variable)) {
+			// 			console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
+			// 			requests.push({
+			// 				replaceAllText: {
+			// 					containsText: { text: variable, matchCase: true },
+			// 					replaceText: value || 'Brak danych',
+			// 				},
+			// 			})
+			// 		}
 
-					// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
-					if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
-						console.log(`Znaleziono checkbox dla: ${key}`)
-						const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
-						const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
+			// 		// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
+			// 		if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
+			// 			console.log(`Znaleziono checkbox dla: ${key}`)
+			// 			const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
+			// 			const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
 
-						requests.push({
-							replaceAllText: {
-								containsText: { text: yesCheckbox, matchCase: true },
-								replaceText: `TAK ${yesValue}`,
-							},
-						})
+			// 			requests.push({
+			// 				replaceAllText: {
+			// 					containsText: { text: yesCheckbox, matchCase: true },
+			// 					replaceText: `TAK ${yesValue}`,
+			// 				},
+			// 			})
 
-						requests.push({
-							replaceAllText: {
-								containsText: { text: noCheckbox, matchCase: true },
-								replaceText: `NIE ${noValue}`,
-							},
-						})
-					}
-				})
-			}
+			// 			requests.push({
+			// 				replaceAllText: {
+			// 					containsText: { text: noCheckbox, matchCase: true },
+			// 					replaceText: `NIE ${noValue}`,
+			// 				},
+			// 			})
+			// 		}
+
+			// 		if (key === 'sign_lang_time') {
+			// 			console.log(`Obsługa checkboxów dla sign_lang_time: ${value}`)
+
+			// 			const options = [
+			// 				'od razu',
+			// 				'w ciągu 1 dnia roboczego',
+			// 				'w ciągu 2-3 dni roboczych',
+			// 				'powyżej 3 dni roboczych',
+			// 			]
+
+			// 			options.forEach((opt, index) => {
+			// 				const checkboxVariable = `{{checkbox_sign_lang_time_${index + 1}}}`
+			// 				requests.push({
+			// 					replaceAllText: {
+			// 						containsText: { text: checkboxVariable, matchCase: true },
+			// 						replaceText: getSignLangCheckbox(value, opt),
+			// 					},
+			// 				})
+			// 			})
+			// 		}
+			// 	})
+			// }
 
 			// 🔹 Sprawdzanie tabel
 			if (element.table) {
@@ -129,6 +161,27 @@ async function generateDocument(data) {
 										containsText: { text: noCheckbox, matchCase: true },
 										replaceText: `NIE ${noValue}`,
 									},
+								})
+							}
+
+							if (cellText.includes(`{{checkbox_sign_lang_time_`)) {
+								console.log(`Znaleziono checkbox w tabeli dla sign_lang_time`)
+
+								const options = [
+									'od razu',
+									'w ciągu 1 dnia roboczego',
+									'w ciągu 2-3 dni roboczych',
+									'powyżej 3 dni roboczych',
+								]
+
+								options.forEach((opt, index) => {
+									const checkboxVariable = `{{checkbox_sign_lang_time_${index + 1}}}`
+									requests.push({
+										replaceAllText: {
+											containsText: { text: checkboxVariable, matchCase: true },
+											replaceText: getSignLangCheckbox(value, opt),
+										},
+									})
 								})
 							}
 						})
