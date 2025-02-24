@@ -127,6 +127,30 @@
         .container-gap {
             margin-top: 25px;
         }
+
+        .disabled-group {
+            opacity: 0.5;
+            /* Wyszarzenie dla etykiet i pól */
+            pointer-events: none;
+            /* Wyłączenie interakcji */
+        }
+
+        .enabled-group {
+            opacity: 1;
+            /* Przywrócenie normalnego wyglądu */
+            pointer-events: auto;
+            /* Aktywacja interakcji */
+        }
+
+        .hidden-section {
+            display: none;
+            /* Domyślnie ukryte */
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            /* Zapobiega ściskaniu poniższych elementów */
+        }
     </style>
 </head>
 
@@ -140,113 +164,96 @@
                 interesantów:</label>
             <input type="number" id="num_buildings" name="num_buildings" required>
 
-            <p>1. Czy podmiot zapewnia wolne od barier poziome i pionowe przestrzenie komunikacyjne?</p>
-            <div class="radio-group">
-                <input type="radio" name="barriers" value="TAK" required
-                    onclick="toggleInput('barrier_count_count_wrapper','barrier_count', false)">
-                TAK
-                <input type="radio" name="barriers" value="NIE"
-                    onclick="toggleInput('barrier_count_count_wrapper','barrier_count', false)"> NIE
-                <input type="radio" name="barriers" value="Częściowo"
-                    onclick="toggleInput('barrier_count_count_wrapper', 'barrier_count',true)"> W
-                części budynków tak, w części nie
-            </div>
-            <div id="barrier_count_count_wrapper" class="hidden">
-                <label for="barrier_count" class="helper-text">
-                    W przypadku odpowiedzi „W części budynków tak, w części nie” – prosimy o podanie liczby budynków,
-                    w których podmiot zapewnia wolne od barier poziome i pionowe przestrzenie komunikacyjne:
-                </label>
-                <input type="number" id="barrier_count" name="barrier_count" disabled>
+            <p>1. Wolne od barier przestrzenie komunikacyjne w budynkach:</p>
+            <label for="barrier_free_all">a. Liczba budynków, w których podmiot zapewnia wolne od barier wszystkie
+                przestrzenie komunikacyjne:</label>
+            <input type="number" id="barrier_free_all" name="barrier_free_all">
+
+            <label for="barrier_free_partial">b. Liczba budynków, w których podmiot częściowo zapewnia wolne od barier
+                przestrzenie komunikacyjne:</label>
+            <input type="number" id="barrier_free_partial" name="barrier_free_partial">
+
+            <label for="barrier_free_none">c. Liczba budynków, w których podmiot nie zapewnia wolnych od barier
+                przestrzeni komunikacyjnych:</label>
+            <input type="number" id="barrier_free_none" name="barrier_free_none">
+
+            <p>2. Dostęp do wszystkich pomieszczeń w budynkach (z wyłączeniem pomieszczeń technicznych):</p>
+            <label for="room_access_all">a. Liczba budynków, w których podmiot umożliwia dostęp do wszystkich
+                pomieszczeń:</label>
+            <input type="number" id="room_access_all" name="room_access_all">
+
+            <label for="room_access_none">b. Liczba budynków, w których podmiot nie umożliwia dostępu do wszystkich
+                pomieszczeń:</label>
+            <input type="number" id="room_access_none" name="room_access_none">
+
+            <p>c. Rodzaje rozwiązań, które podmiot zastosował, aby umożliwić dostęp do wszystkich pomieszczeń:</p>
+            <label><input type="checkbox" name="room_access_solutions" value="Rozwiązania architektoniczne"> Rozwiązania
+                architektoniczne</label>
+            <label><input type="checkbox" name="room_access_solutions" value="Środki techniczne"> Środki
+                techniczne</label>
+            <label><input type="checkbox" name="room_access_solutions" value="Zainstalowane urządzenia"> Zainstalowane
+                urządzenia</label>
+
+            <p>3. Informacja na temat rozkładu pomieszczeń w budynkach:</p>
+            <label for="layout_info_visual_tactile">a. Liczba budynków, w których podmiot zapewnia informację co
+                najmniej w sposób wizualny i dotykowy:</label>
+            <input type="number" id="layout_info_visual_tactile" name="layout_info_visual_tactile">
+
+            <label for="layout_info_visual_voice">b. Liczba budynków, w których podmiot zapewnia informację co najmniej
+                w sposób wizualny i głosowy:</label>
+            <input type="number" id="layout_info_visual_voice" name="layout_info_visual_voice">
+
+            <label for="layout_info_all">c. Liczba budynków, w których podmiot zapewnia informację co najmniej w sposób
+                wizualny, dotykowy i głosowy:</label>
+            <input type="number" id="layout_info_all" name="layout_info_all">
+
+            <p>4. Dostęp do budynków dla osób korzystających z psa asystującego:</p>
+            <label for="dog_access_yes">a. Liczba budynków, do których podmiot zapewnia wstęp osobie korzystającej z psa
+                asystującego:</label>
+            <input type="number" id="dog_access_yes" name="dog_access_yes">
+
+            <label for="dog_access_no">b. Liczba budynków, do których podmiot nie zapewnia wstępu osobie korzystającej z
+                psa asystującego:</label>
+            <input type="number" id="dog_access_no" name="dog_access_no">
+
+            <p>5. Ewakuacja lub ratowanie osób wewnątrz budynków:</p>
+            <p>a. Aby umożliwić ewakuację lub ratowanie osób wewnątrz budynków, podmiot zapewnia:</p>
+
+            <label><input type="checkbox" name="evacuation_methods" value="Procedury ewakuacji lub ratowania"
+                    onclick="updateEvacuationOptions()"> Procedury ewakuacji lub ratowania</label>
+            <label><input type="checkbox" name="evacuation_methods"
+                    value="Sprzęt lub miejsce do ewakuacji lub ratowania" onclick="updateEvacuationOptions()"> Sprzęt
+                lub miejsce do ewakuacji lub ratowania</label>
+            <label><input type="checkbox" name="evacuation_methods"
+                    value="Pracowników przeszkolonych z procedur ewakuacji lub ratowania"
+                    onclick="updateEvacuationOptions()"> Pracowników przeszkolonych z procedur ewakuacji lub
+                ratowania</label>
+
+            <div class="disabled-group">
+                <label for="evacuation_full">b. Liczba budynków, w których podmiot zapewnia pełną ewakuację dla osób ze
+                    szczególnymi potrzebami <span style="font-size: 12px;">(dotyczy tylko budynków, w których spełniono
+                        wszystkie 3 warunki wskazane w pytaniu 5a)</span>:</label>
+                <input type="number" id="evacuation_full" name="evacuation_full" disabled>
             </div>
 
-
-            <p>2. Czy podmiot zapewnia dostęp do wszystkich pomieszczeń (z wyłączeniem technicznych)?</p>
-            <div class="radio-group">
-                <input type="radio" name="room_access" value="TAK" required
-                    onclick="toggleInput('room_access_count_wrapper','room_access_count', false)"> TAK
-                <input type="radio" name="room_access" value="NIE"
-                    onclick="toggleInput('room_access_count_wrapper','room_access_count', false)">
-                NIE
-                <input type="radio" name="room_access" value="Częściowo"
-                    onclick="toggleInput('room_access_count_wrapper','room_access_count', true)"> W części budynków tak,
-                w części nie
-            </div>
-            <div id="room_access_count_wrapper" class="hidden">
-                <label for="room_access_count" class="helper-text">
-                    W przypadku odpowiedzi „W części budynków tak, w części nie” – prosimy o podanie liczby budynków,
-                    w których podmiot umożliwia dostęp do wszystkich pomieszczeń, z wyłączeniem pomieszczeń
-                    technicznych:
-                </label>
-                <input type="number" id="room_access_count" name="room_access_count" disabled>
+            <div class="disabled-group">
+                <label for="evacuation_partial">c. Liczba budynków, w których podmiot częściowo zapewnia ewakuację dla
+                    osób ze szczególnymi potrzebami<span style="font-size: 12px;">(dotyczy tylko budynków, w których
+                        spełniono co najmniej 1 z 3 warunków wskazanych w pytaniu 5a)</span>:</label>
+                <input type="number" id="evacuation_partial" name="evacuation_partial" disabled>
             </div>
 
-
-            <p>3. Czy podmiot zapewnia informację na temat rozkładu pomieszczeń?</p>
-            <div class="radio-group">
-                <input type="radio" name="layout_info" value="TAK" required
-                    onclick="toggleInput('layout_info_count_wrapper','layout_info_count', false)"> TAK
-                <input type="radio" name="layout_info" value="NIE"
-                    onclick="toggleInput('layout_info_count_wrapper', 'layout_info_count',false)">
-                NIE
-                <input type="radio" name="layout_info" value="Częściowo"
-                    onclick="toggleInput('layout_info_count_wrapper','layout_info_count', true)"> W części budynków tak,
-                w części nie
-            </div>
-            <div id="layout_info_count_wrapper" class="hidden">
-                <label for="layout_info_count" class="helper-text">W przypadku odpowiedzi „W części budynków tak, w
-                    części
-                    nie” – prosimy o
-                    podanie liczby budynków, w których podmiot zapewnia informację na temat rozkładu pomieszczeń, co
-                    najmniej w sposób wizualny i dotykowy lub głosowy:</label>
-                <input type="number" id="layout_info_count" name="layout_info_count" disabled>
-            </div>
-
-            <p>4. Czy podmiot umożliwia wstęp osobie z psem asystującym?</p>
-            <div class="radio-group">
-                <input type="radio" name="dog_access" value="TAK" required
-                    onclick="toggleInput('dog_access_count_wrapper','dog_access_count', false)"> TAK
-                <input type="radio" name="dog_access" value="NIE"
-                    onclick="toggleInput('dog_access_count_wrapper','dog_access_count', false)"> NIE
-                <input type="radio" name="dog_access" value="Częściowo"
-                    onclick="toggleInput('dog_access_count_wrapper', 'dog_access_count',true)">
-                W części budynków tak, w części nie
-            </div>
-            <div id="dog_access_count_wrapper" class="hidden">
-                <label for="dog_access_count" class="helper-text">W przypadku wskazania odpowiedzi „W części budynków
-                    tak, w
-                    części nie” –
-                    prosimy o podanie liczby budynków, do których podmiot zapewnia wstęp osobie korzystającej z psa
-                    asystującego:
-                </label>
-                <input type="number" id="dog_access_count" name="dog_access_count" disabled>
-            </div>
-
-            <p>5. Czy podmiot zapewnia możliwość ewakuacji osobom ze szczególnymi potrzebami?</p>
-            <div class="radio-group">
-                <input type="radio" name="evacuation" value="TAK" required
-                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', false)"> TAK
-                <input type="radio" name="evacuation" value="NIE"
-                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', false)"> NIE
-                <input type="radio" name="evacuation" value="Częściowo"
-                    onclick="toggleInput('evacuation_count_wrapper', 'evacuation_count', true)">
-                W części budynków tak, w części nie
-            </div>
-            <div id="evacuation_count_wrapper" class="hidden">
-                <label for="evacuation_count" class="helper-text">W przypadku odpowiedzi „W części budynków tak, w
-                    części
-                    nie” – prosimy o
-                    podanie liczby budynków, w których podmiot zapewnia osobom ze szczególnymi potrzebami możliwość
-                    ewakuacji lub uratowania w inny sposób:</label>
-                <input type="number" id="evacuation_count" name="evacuation_count" disabled>
+            <div class="disabled-group">
+                <label for="evacuation_none">d. Liczba budynków, w których podmiot nie zapewnia ewakuacji dla osób ze
+                    szczególnymi potrzebami<span style="font-size: 12px;">(dotyczy tylko budynków, w których nie
+                        spełniono żadnego z warunków wskazanych w pytaniu 5a)</span>:</label>
+                <input type="number" id="evacuation_none" name="evacuation_none" disabled>
             </div>
 
             <div class="comment-header">
-                <label for="comments">
-                    Komentarze i uwagi dotyczące dostępności architektonicznej:
-                </label>
+                <label for="comments">Komentarze i uwagi dotyczące dostępności architektonicznej:</label>
                 <button type="button" class="toggle-button" id="comments-helperButton"
-                    onclick="toggleHelperText('comments-helperText', 'comments-helperButton')">Pokaż
-                    więcej</button>
+                    onclick="toggleHelperText('comments-helperText', 'comments-helperButton')">Pokaż więcej</button>
             </div>
             <p id="comments-helperText" class="small-text hidden">
                 Proszę zamieścić tu słowny opis dostępności architektonicznej, wykraczający poza informacje ujęte
@@ -255,9 +262,9 @@
                 Informacji Publicznej – na swojej stronie internetowej.
             </p>
             <textarea id="comments" name="comments" rows="4"></textarea>
+
             <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
             <input type="email" id="user_email" name="user_email" required>
-
 
             <button type="submit">Wyślij</button>
         </form>
@@ -270,26 +277,29 @@
             <p>1. Czy podmiot zapewnia osobom ze szczególnymi potrzebami obsługę z wykorzystaniem niżej wymienionych
                 sposobów/środków wspierających komunikowanie się?</p>
 
-            <p>a. Kontakt telefoniczny</p>
+            <p>a. Zastosowanie formularza kontaktowego</p>
             <div class="radio-group">
-                <input type="radio" name="contact_phone" value="TAK" required> TAK
-                <input type="radio" name="contact_phone" value="NIE"> NIE
+                <input type="radio" name="contact_form" value="TAK" required> TAK
+                <input type="radio" name="contact_form" value="NIE"> NIE
             </div>
 
-            <p>b. Kontakt korespondencyjny</p>
+            <p>b. Kontakt za pomocą poczty elektronicznej</p>
             <div class="radio-group">
                 <input type="radio" name="contact_mail" value="TAK" required> TAK
                 <input type="radio" name="contact_mail" value="NIE"> NIE
             </div>
 
-            <p>c. Przesyłanie wiadomości tekstowych, w tym z wykorzystaniem wiadomości SMS, MMS lub komunikatorów
-                internetowych</p>
+            <p>c. Przesyłanie wiadomości tekstowych, w tym z wykorzystaniem wiadomości SMS,
+                MMS lub komunikatorów internetowych
+            </p>
             <div class="radio-group">
                 <input type="radio" name="contact_sms" value="TAK" required> TAK
                 <input type="radio" name="contact_sms" value="NIE"> NIE
             </div>
 
-            <p>d. Komunikacja audiowizualna, w tym z wykorzystaniem komunikatorów internetowych</p>
+            <p>d. Komunikacja audiowizualna, w tym z wykorzystaniem komunikatorów
+                internetowych
+            </p>
             <div class="radio-group">
                 <input type="radio" name="contact_av" value="TAK" required> TAK
                 <input type="radio" name="contact_av" value="NIE"> NIE
@@ -301,7 +311,8 @@
                 <input type="radio" name="contact_fax" value="NIE"> NIE
             </div>
 
-            <p>f. Wykorzystanie tłumacza języka migowego przez strony internetowe i/lub aplikacje (tłumaczenie online)
+            <p>f. Wykorzystanie tłumacza języka migowego przez strony internetowe i/lub aplikacje
+                (tłumaczenie online)
             </p>
             <div class="radio-group">
                 <input type="radio" name="contact_sign_online" value="TAK" required> TAK
@@ -317,8 +328,10 @@
             </div>
 
             <div id="sign_lang_wrapper" class="hidden">
-                <label for="sign_lang_time" class="helper-text">W przypadku zaznaczenia „TAK” – prosimy określić w jakim
-                    czasie od zgłoszenia potrzeby podmiot zapewnia kontakt osobisty z tłumaczem języka migowego:</label>
+                <label for="sign_lang_time" class="helper-text">W przypadku zaznaczenia odpowiedzi „TAK” – prosimy
+                    określić w jakim czasie od zgłoszenia potrzeby
+                    podmiot zapewnia kontakt osobisty z tłumaczem języka migowego:
+                </label>
                 <select id="sign_lang_time" name="sign_lang_time">
                     <option value="od razu">od razu</option>
                     <option value="1 dzień">w ciągu 1 dnia roboczego</option>
@@ -332,123 +345,135 @@
                 <input type="radio" name="contact_guide" value="TAK" required> TAK
                 <input type="radio" name="contact_guide" value="NIE"> NIE
             </div>
+            <p>2. Czy podmiot posiada urządzenia lub środki techniczne do obsługi osób słabosłyszących?</p>
 
-            <p>2. Czy podmiot posiada urządzenia lub środki techniczne do obsługi osób słabosłyszących, takich jak
-                np. pętle indukcyjne, systemy FM, systemy na podczerwień (IR), systemy Bluetooth?
-            </p>
+            <p>a. Pętle indukcyjne</p>
             <div class="radio-group">
-                <input type="radio" name="hearing_support" value="TAK" required
-                    onclick="toggleInput('hearing_support_wrapper', 'hearing_devices_count', true)"> TAK
-                <input type="radio" name="hearing_support" value="NIE"
-                    onclick="toggleInput('hearing_support_wrapper', 'hearing_devices_count', false)"> NIE
+                <input type="radio" name="hearing_loop" value="TAK"
+                    onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', true)"> TAK
+                <input type="radio" name="hearing_loop" value="NIE"
+                    onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', false)"> NIE
+            </div>
+            <div id="hearing_loop_count_wrapper" class="hidden">
+                <label for="hearing_loop_count">Liczba urządzeń:</label>
+                <input type="number" id="hearing_loop_count" name="hearing_loop_count" disabled>
             </div>
 
-            <div id="hearing_support_wrapper" class="hidden">
-                <label for="hearing_devices_count" class="helper-text">W przypadku zaznaczenia odpowiedzi „TAK” –
-                    prosimy o podanie liczby posiadanych urządzeń lub środków technicznych do obsługi osób
-                    słabosłyszących:</label>
-                <input type="number" id="hearing_devices_count" name="hearing_devices_count" disabled>
+            <p>b. Systemy FM</p>
+            <div class="radio-group">
+                <input type="radio" name="fm_systems" value="TAK"
+                    onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', true)"> TAK
+                <input type="radio" name="fm_systems" value="NIE"
+                    onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', false)"> NIE
+            </div>
+            <div id="fm_systems_count_wrapper" class="hidden">
+                <label for="fm_systems_count">Liczba urządzeń:</label>
+                <input type="number" id="fm_systems_count" name="fm_systems_count" disabled>
             </div>
 
-            <p>Liczba prowadzonych przez podmiot stron internetowych:</p>
-            <input type="number" id="website_count" name="website_count" required>
+            <p>c. Systemy na podczerwień (IR)</p>
+            <div class="radio-group">
+                <input type="radio" name="ir_systems" value="TAK"
+                    onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', true)"> TAK
+                <input type="radio" name="ir_systems" value="NIE"
+                    onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', false)"> NIE
+            </div>
+            <div id="ir_systems_count_wrapper" class="hidden">
+                <label for="ir_systems_count">Liczba urządzeń:</label>
+                <input type="number" id="ir_systems_count" name="ir_systems_count" disabled>
+            </div>
 
-            <p>3. Czy podmiot zapewnia na tej stronie internetowej (tych stronach internetowych) informację o zakresie
-                swojej działalności (głównych zadaniach podmiotu) w postaci:</p>
+            <p>d. Systemy Bluetooth</p>
+            <div class="radio-group">
+                <input type="radio" name="bluetooth_systems" value="TAK"
+                    onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', true)"> TAK
+                <input type="radio" name="bluetooth_systems" value="NIE"
+                    onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', false)"> NIE
+            </div>
+            <div id="bluetooth_systems_count_wrapper" class="hidden">
+                <label for="bluetooth_systems_count">Liczba urządzeń:</label>
+                <input type="number" id="bluetooth_systems_count" name="bluetooth_systems_count" disabled>
+            </div>
+
+            <p>e. Inne urządzenia lub środki techniczne</p>
+            <div class="radio-group">
+                <input type="radio" name="other_devices" value="TAK"
+                    onclick="toggleInputGroup(true, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
+                TAK
+                <input type="radio" name="other_devices" value="NIE"
+                    onclick="toggleInputGroup(false, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
+                NIE
+            </div>
+
+            <div id="other_devices_wrapper" class="hidden-section">
+                <label for="other_devices_description">Prosimy o opis słowny posiadanych urządzeń lub środków
+                    technicznych</label>
+                <textarea id="other_devices_description" name="other_devices_description" rows="3" disabled></textarea>
+
+                <label for="other_devices_count">Liczba urządzeń:</label>
+                <input type="number" id="other_devices_count" name="other_devices_count" disabled>
+            </div>
+
+            <p>3. Czy podmiot zapewnia na swojej głównej stronie internetowej informację o zakresie swojej działalności
+                (głównych zadaniach podmiotu) w postaci</p>
 
             <p>a. Tekstu odczytywalnego maszynowo?</p>
             <div class="radio-group">
-                <input type="radio" name="machine_readable_text" value="TAK" required
-                    onclick="toggleInput('machine_readable_text_wrapper', 'machine_readable_text_count', false)"> TAK
-                <input type="radio" name="machine_readable_text" value="NIE"
-                    onclick="toggleInput('machine_readable_text_wrapper', 'machine_readable_text_count', false)"> NIE
-                <input type="radio" name="machine_readable_text" value="Częściowo"
-                    onclick="toggleInput('machine_readable_text_wrapper', 'machine_readable_text_count', true)"> Na
-                części stron tak, na części nie
-            </div>
-
-            <div id="machine_readable_text_wrapper" class="hidden">
-                <label for="machine_readable_text_count" class="helper-text">
-                    W przypadku odpowiedzi „Na części stron tak, na części nie” – prosimy o podanie liczby stron, na
-                    których podmiot zapewnia informację o zakresie swojej działalności w postaci tekstu odczytywalnego
-                    maszynowo:
-                </label>
-                <input type="number" id="machine_readable_text_count" name="machine_readable_text_count" disabled>
+                <input type="radio" name="machine_readable_text" value="TAK" required> TAK
+                <input type="radio" name="machine_readable_text" value="NIE"> NIE
             </div>
 
             <p>b. Nagrania treści w polskim języku migowym (PJM) w postaci pliku wideo?</p>
             <div class="radio-group">
-                <input type="radio" name="pjm_video" value="TAK" required
-                    onclick="toggleInput('pjm_video_wrapper', 'pjm_video_count', false)"> TAK
-                <input type="radio" name="pjm_video" value="NIE"
-                    onclick="toggleInput('pjm_video_wrapper', 'pjm_video_count', false)"> NIE
-                <input type="radio" name="pjm_video" value="Częściowo"
-                    onclick="toggleInput('pjm_video_wrapper', 'pjm_video_count', true)"> Na części stron tak, na części
-                nie
-            </div>
-
-            <div id="pjm_video_wrapper" class="hidden">
-                <label for="pjm_video_count" class="helper-text">
-                    W przypadku odpowiedzi „Na części stron tak, na części nie” – prosimy o podanie liczby stron, na
-                    których podmiot zapewnia informacje o zakresie swojej działalności w postaci nagrania treści w
-                    polskim języku migowym:
-                </label>
-                <input type="number" id="pjm_video_count" name="pjm_video_count" disabled>
+                <input type="radio" name="pjm_video" value="TAK" required> TAK
+                <input type="radio" name="pjm_video" value="NIE"> NIE
             </div>
 
             <p>c. Informacji w tekście łatwym do czytania (ETR)?</p>
             <div class="radio-group">
-                <input type="radio" name="easy_read_text" value="TAK" required
-                    onclick="toggleInput('easy_read_text_wrapper', 'easy_read_text_count', false)"> TAK
-                <input type="radio" name="easy_read_text" value="NIE"
-                    onclick="toggleInput('easy_read_text_wrapper', 'easy_read_text_count', false)"> NIE
-                <input type="radio" name="easy_read_text" value="Częściowo"
-                    onclick="toggleInput('easy_read_text_wrapper', 'easy_read_text_count', true)"> Na części stron tak,
-                na części nie
+                <input type="radio" name="easy_read_text" value="TAK" required> TAK
+                <input type="radio" name="easy_read_text" value="NIE"> NIE
             </div>
 
-            <div id="easy_read_text_wrapper" class="hidden">
-                <label for="easy_read_text_count" class="helper-text">
-                    W przypadku odpowiedzi „Na części stron tak, na części nie” – prosimy o podanie liczby stron, na
-                    których podmiot zapewnia informacje o zakresie swojej działalności w postaci informacji w tekście
-                    łatwym do czytania:
-                    <input type="number" id="easy_read_text_count" name="easy_read_text_count" disabled>
-            </div>
-
-            <p>4. Czy podmiot zapewniał w okresie sprawozdawczym na wniosek osoby ze szczególnymi potrzebami możliwość
-                komunikacji w formie określonej w tym wniosku?
+            <p>4. Czy w okresie sprawozdawczym podmiot otrzymał od osób ze
+                szczególnymi potrzebami wniosek o zapewnienie szczególnej formy komunikacji?
+                <span style="font-size: 12px;">(na podstawie art. 6 pkt 3 lit.d UzD)</span>
             </p>
             <div class="radio-group">
-                <input type="radio" name="communication_request" value="TAK" required
-                    onclick="toggleInput('communication_details_wrapper', 'communication_details', true)"> TAK
+                <input type="radio" name="communication_request" value="TAK"
+                    onclick="toggleInputGroup(true, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
+                TAK
                 <input type="radio" name="communication_request" value="NIE"
-                    onclick="toggleInput('communication_details_wrapper', 'communication_details', false)"> NIE
+                    onclick="toggleInputGroup(false, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
+                NIE
             </div>
 
-            <div id="communication_details_wrapper" class="hidden">
-                <label for="communication_details" class="helper-text">W przypadku odpowiedzi „TAK” – prosimy o podanie
-                    poniżej dodatkowych informacji:</label>
-                <textarea id="communication_details" name="communication_details" rows="4"></textarea>
-            </div>
-            <div class="number-of-applications-header">
-                <label for="number-of-applications">
-                    Liczba wniosków – ogółem:
+            <div id="communication_details_wrapper" class="hidden-section">
+                <label for="communication_count">Liczba wniosków – ogółem:</label>
+                <input type="number" id="communication_count" name="communication_count" disabled>
+
+                <label for="communication_details">
+                    Nazwy użytych form komunikacji określonych we wnioskach ze wskazaniem liczby użyć każdej z tych form
+                    (wpisać słownie np. alfabet Lorma - 1 raz, druk w alfabecie Braille’a - 3 razy)
                 </label>
-                <button type="button" class="toggle-button" id="number-of-application-helperButton"
-                    onclick="toggleHelperText('number-of-applications-helperText', 'number-of-application-helperButton')">Pokaż
-                    więcej</button>
+                <textarea id="communication_details" name="communication_details" rows="4" disabled></textarea>
             </div>
-            <p id="number-of-applications-helperText" class="small-text hidden">
-                Nazwy użytych form komunikacji określonych we wnioskach ze wskazaniem liczby użyć każdej z tych form:
-                (wpisać słownie np. alfabet Lorma - 1 raz, druk w alfabecie Braille’a - 3 razy)
-            </p>
-            <textarea id="number-of-applications" name="number-of-applications" rows="4"></textarea>
-            <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
+
+
+            <p>Komentarze i uwagi dotyczące dostępności informacyjno-komunikacyjnej <span
+                    style="font-size: 12px;">(proszę zamieścić tu słowny opis dostępności informacyjno-komunikacyjnej,
+                    wykraczający poza informacje ujęte powyżej – opis ten będzie stanowić część raportu, który są
+                    Państwo zobowiązani opublikować na swojej stronie podmiotowej Biuletynu Informacji Publicznej, a w
+                    przypadku braku strony podmiotowej Biuletynu Informacji Publicznej – na swojej stronie
+                    internetowej)</span>:</p>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+
+            <label for="user_email">Podaj adres e-mail:</label>
             <input type="email" id="user_email" name="user_email" required>
+
             <button type="submit">Wyślij</button>
         </form>
     </div>
-
 
 </body>
 <script>
@@ -457,7 +482,24 @@
             event.preventDefault();
 
             const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
+            let data = Object.fromEntries(formData.entries());
+
+            // Resetowanie checkboxów jako tablic
+            document.querySelectorAll(`#${event.target.id} input[type="checkbox"]`).forEach((checkbox) => {
+                if (!data[checkbox.name]) {
+                    data[checkbox.name] = []; // Inicjalizujemy jako tablicę
+                } else if (!Array.isArray(data[checkbox.name])) {
+                    data[checkbox.name] = [data[checkbox.name]]; // Konwersja do tablicy
+                }
+            });
+
+            // Dodawanie zaznaczonych wartości, ale unikamy duplikatów
+            document.querySelectorAll(`#${event.target.id} input[type="checkbox"]:checked`).forEach((checkbox) => {
+                if (!data[checkbox.name].includes(checkbox.value)) {
+                    data[checkbox.name].push(checkbox.value);
+                }
+            });
+
             data.formType = formType;
             console.log("Wysyłanie formularza:", event.target.id, data);
 
@@ -481,8 +523,8 @@
             handleFormSubmit(event, "architectural");
         });
 
-        // Obsługa formularza Dostępności Informacyjno-Komunikacyjnej
-        document.getElementById("infoForm").addEventListener("submit", function (event) {
+        // Obsługa formularza Dostępności Informacyjno-Komunikacyjnej (jeśli istnieje)
+        document.getElementById("infoForm")?.addEventListener("submit", function (event) {
             handleFormSubmit(event, "informational");
         });
     });
@@ -518,6 +560,62 @@
             button.textContent = "Pokaż więcej";
         }
     }
+
+    function updateEvacuationOptions() {
+        const checkboxes = document.querySelectorAll('input[name="evacuation_methods"]:checked');
+        const fullGroup = document.getElementById('evacuation_full').parentElement;
+        const partialGroup = document.getElementById('evacuation_partial').parentElement;
+        const noneGroup = document.getElementById('evacuation_none').parentElement;
+
+        let checkedCount = checkboxes.length;
+
+        // Resetujemy wszystkie grupy do domyślnego stanu (wyszarzone)
+        [fullGroup, partialGroup, noneGroup].forEach(group => {
+            group.classList.add('disabled-group');
+            group.classList.remove('enabled-group');
+            group.querySelector('input').value = ""; // Czyszczenie wartości pola
+            group.querySelector('input').disabled = true;
+        });
+
+        // Aktywujemy odpowiednie grupy w zależności od liczby zaznaczonych checkboxów
+        if (checkedCount === 3) {
+            fullGroup.classList.remove('disabled-group');
+            fullGroup.classList.add('enabled-group');
+            fullGroup.querySelector('input').disabled = false;
+        } else if (checkedCount > 0) {
+            partialGroup.classList.remove('disabled-group');
+            partialGroup.classList.add('enabled-group');
+            partialGroup.querySelector('input').disabled = false;
+        } else {
+            noneGroup.classList.remove('disabled-group');
+            noneGroup.classList.add('enabled-group');
+            noneGroup.querySelector('input').disabled = false;
+        }
+    }
+
+    // Wywołanie funkcji przy starcie, aby opcja „d” była aktywna
+    document.addEventListener("DOMContentLoaded", function () {
+        updateEvacuationOptions();
+    });
+
+    function toggleInputGroup(isEnabled, wrapperId, inputIds) {
+        const wrapper = document.getElementById(wrapperId);
+        const inputs = inputIds.map(id => document.getElementById(id));
+
+        if (isEnabled) {
+            wrapper.style.display = "flex"; // Pokazuje sekcję
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+        } else {
+            wrapper.style.display = "none"; // Ukrywa sekcję
+            inputs.forEach(input => {
+                input.disabled = true;
+                input.value = ""; // Resetuje pola po odznaczeniu
+            });
+        }
+    }
+
 </script>
 
 </html>

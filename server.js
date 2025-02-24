@@ -19,60 +19,73 @@ const transporter = nodemailer.createTransport({
 function handleArchitecturalForm(data) {
 	const {
 		num_buildings,
-		barriers,
-		barrier_count,
-		room_access,
-		room_access_count,
-		layout_info,
-		layout_info_count,
-		dog_access,
-		dog_access_count,
-		evacuation,
-		evacuation_count,
+		barrier_free_all,
+		barrier_free_partial,
+		barrier_free_none,
+		room_access_all,
+		room_access_none,
+		room_access_solutions,
+		layout_info_visual_tactile,
+		layout_info_visual_voice,
+		layout_info_all,
+		dog_access_yes,
+		dog_access_no,
+		evacuation_methods,
+		evacuation_full,
+		evacuation_partial,
+		evacuation_none,
 		comments,
 	} = data
 
+	// Formatowanie tablic i wartości
+	const formatArray = value => {
+		if (!value) return 'Brak'
+		return Array.isArray(value) ? value.join(', ') : value
+	}
+	const formatNumber = value => (value ? value : 0)
+
 	let emailText = `
 Dostępność architektoniczna
-Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub obsługę interesantów: ${num_buildings}
+Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub obsługę interesantów: ${formatNumber(
+		num_buildings
+	)}
 
-1. Czy podmiot zapewnia w tym budynku (tych budynkach) wolne od barier poziome i pionowe przestrzenie komunikacyjne?
-${barriers}`
+1. Wolne od barier przestrzenie komunikacyjne w budynkach:
+   a) Liczba budynków, w których podmiot zapewnia wolne od barier wszystkie przestrzenie komunikacyjne: ${formatNumber(
+			barrier_free_all
+		)}
+   b) Liczba budynków, w których podmiot częściowo zapewnia wolne od barier przestrzenie komunikacyjne: ${formatNumber(
+			barrier_free_partial
+		)}
+   c) Liczba budynków, w których podmiot nie zapewnia wolnych od barier przestrzeni komunikacyjnych: ${formatNumber(
+			barrier_free_none
+		)}
 
-	if (barriers === 'Częściowo') {
-		emailText += `\nLiczba budynków: ${barrier_count}`
-	}
+2. Dostęp do wszystkich pomieszczeń w budynkach:
+   a) Liczba budynków, w których podmiot umożliwia dostęp do wszystkich pomieszczeń: ${formatNumber(room_access_all)}
+   b) Liczba budynków, w których podmiot nie umożliwia dostępu do wszystkich pomieszczeń: ${formatNumber(
+			room_access_none
+		)}
+   c) Rodzaje rozwiązań zastosowanych w budynkach: ${formatArray(room_access_solutions)}
 
-	emailText += `\n\n2. Czy podmiot zastosował rozwiązania architektoniczne umożliwiające dostęp do wszystkich pomieszczeń?
-${room_access}`
+3. Informacja na temat rozkładu pomieszczeń w budynkach:
+   a) Liczba budynków z informacją wizualną i dotykową: ${formatNumber(layout_info_visual_tactile)}
+   b) Liczba budynków z informacją wizualną i głosową: ${formatNumber(layout_info_visual_voice)}
+   c) Liczba budynków z informacją wizualną, dotykową i głosową: ${formatNumber(layout_info_all)}
 
-	if (room_access === 'Częściowo') {
-		emailText += `\nLiczba budynków z dostępem do wszystkich pomieszczeń: ${room_access_count}`
-	}
+4. Dostęp do budynków dla osób korzystających z psa asystującego:
+   a) Liczba budynków z zapewnionym wstępem: ${formatNumber(dog_access_yes)}
+   b) Liczba budynków bez zapewnionego wstępu: ${formatNumber(dog_access_no)}
 
-	emailText += `\n\n3. Czy podmiot zapewnia informację na temat rozkładu pomieszczeń co najmniej w sposób wizualny i dotykowy lub głosowy?
-${layout_info}`
+5. Ewakuacja lub ratowanie osób wewnątrz budynków:
+   a) Podmiot zapewnia następujące rozwiązania: ${formatArray(evacuation_methods)}
+   b) Liczba budynków z pełną ewakuacją: ${formatNumber(evacuation_full)}
+   c) Liczba budynków z częściową ewakuacją: ${formatNumber(evacuation_partial)}
+   d) Liczba budynków bez ewakuacji: ${formatNumber(evacuation_none)}
 
-	if (layout_info === 'Częściowo') {
-		emailText += `\nLiczba budynków z informacją o rozkładzie pomieszczeń: ${layout_info_count}`
-	}
-
-	emailText += `\n\n4. Czy podmiot umożliwia wstęp do budynku osobie korzystającej z psa asystującego?
-${dog_access}`
-
-	if (dog_access === 'Częściowo') {
-		emailText += `\nLiczba budynków, do których podmiot zapewnia wstęp dla psa asystującego: ${dog_access_count}`
-	}
-
-	emailText += `\n\n5. Czy podmiot zapewnia osobom ze szczególnymi potrzebami możliwość ewakuacji lub uratowania w inny sposób?
-${evacuation}`
-
-	if (evacuation === 'Częściowo') {
-		emailText += `\nLiczba budynków z możliwością ewakuacji: ${evacuation_count}`
-	}
-
-	emailText += `\n\nKomentarze i uwagi dotyczące dostępności architektonicznej:
-${comments}`
+Komentarze i uwagi dotyczące dostępności architektonicznej:
+${comments}
+`
 
 	return emailText
 }
@@ -80,7 +93,7 @@ ${comments}`
 // Funkcja obsługująca formularz dostępności informacyjno-komunikacyjnej
 function handleInformationalForm(data) {
 	const {
-		contact_phone,
+		contact_form,
 		contact_mail,
 		contact_sms,
 		contact_av,
@@ -89,25 +102,32 @@ function handleInformationalForm(data) {
 		contact_sign_personal,
 		sign_lang_time,
 		contact_guide,
-		hearing_support,
-		hearing_devices_count,
-		website_count,
-		machine_readable_text,
-		machine_readable_text_count,
-		pjm_video,
-		pjm_video_count,
-		easy_read_text,
-		easy_read_text_count,
+		hearing_loop,
+		hearing_loop_count,
+		fm_systems,
+		fm_systems_count,
+		ir_systems,
+		ir_systems_count,
+		bluetooth_systems,
+		bluetooth_systems_count,
+		other_devices,
+		other_devices_description,
+		other_devices_count,
 		communication_request,
+		communication_count,
 		communication_details,
+		machine_readable_text,
+		pjm_video,
+		easy_read_text,
+		comments,
 	} = data
 
 	let emailText = `
 Dostępność informacyjno-komunikacyjna
 
 1. Czy podmiot zapewnia osobom ze szczególnymi potrzebami obsługę w następujący sposób?
-a. Kontakt telefoniczny: ${contact_phone}
-b. Kontakt korespondencyjny: ${contact_mail}
+a. Zastosowanie formularza kontaktowego: ${contact_form}
+b. Kontakt za pomocą poczty elektronicznej: ${contact_mail}
 c. Przesyłanie wiadomości tekstowych (SMS, MMS, komunikatory): ${contact_sms}
 d. Komunikacja audiowizualna: ${contact_av}
 e. Przesyłanie faksów: ${contact_fax}
@@ -120,38 +140,54 @@ g. Pomoc tłumacza języka migowego (kontakt osobisty): ${contact_sign_personal}
 
 	emailText += `\n\nh. Kontakt z pomocą tłumacza-przewodnika: ${contact_guide}`
 
-	emailText += `\n\n2. Czy podmiot posiada urządzenia lub środki techniczne do obsługi osób słabosłyszących? ${hearing_support}`
+	emailText += `\n\n2. Czy podmiot posiada urządzenia lub środki techniczne do obsługi osób słabosłyszących?`
 
-	if (hearing_support === 'TAK') {
-		emailText += `\n   Liczba urządzeń: ${hearing_devices_count}`
+	if (hearing_loop === 'TAK') {
+		emailText += `\n   a) Pętle indukcyjne: TAK, Liczba: ${hearing_loop_count || 0}`
+	} else {
+		emailText += `\n   a) Pętle indukcyjne: NIE`
 	}
 
-	emailText += `\n\n3. Liczba prowadzonych przez podmiot stron internetowych: ${website_count}`
-
-	emailText += `\n\n4. Czy podmiot zapewnia informacje na stronie internetowej?`
-	emailText += `\na. Tekst odczytywalny maszynowo: ${machine_readable_text}`
-
-	if (machine_readable_text === 'Częściowo') {
-		emailText += `\n   Liczba stron z tekstem odczytywalnym: ${machine_readable_text_count}`
+	if (fm_systems === 'TAK') {
+		emailText += `\n   b) Systemy FM: TAK, Liczba: ${fm_systems_count || 0}`
+	} else {
+		emailText += `\n   b) Systemy FM: NIE`
 	}
 
-	emailText += `\nb. Nagrania PJM: ${pjm_video}`
-
-	if (pjm_video === 'Częściowo') {
-		emailText += `\n   Liczba stron z nagraniami PJM: ${pjm_video_count}`
+	if (ir_systems === 'TAK') {
+		emailText += `\n   c) Systemy na podczerwień (IR): TAK, Liczba: ${ir_systems_count || 0}`
+	} else {
+		emailText += `\n   c) Systemy na podczerwień (IR): NIE`
 	}
 
-	emailText += `\nc. Tekst łatwy do czytania (ETR): ${easy_read_text}`
-
-	if (easy_read_text === 'Częściowo') {
-		emailText += `\n   Liczba stron z tekstem ETR: ${easy_read_text_count}`
+	if (bluetooth_systems === 'TAK') {
+		emailText += `\n   d) Systemy Bluetooth: TAK, Liczba: ${bluetooth_systems_count || 0}`
+	} else {
+		emailText += `\n   d) Systemy Bluetooth: NIE`
 	}
 
-	emailText += `\n\n5. Czy podmiot zapewniał możliwość komunikacji w preferowanej formie? ${communication_request}`
+	if (other_devices === 'TAK') {
+		emailText += `\n   e) Inne urządzenia: TAK, Opis: ${other_devices_description || 'Brak opisu'}, Liczba: ${
+			other_devices_count || 0
+		}`
+	} else {
+		emailText += `\n   e) Inne urządzenia: NIE`
+	}
+
+	emailText += `\n\n3. Czy podmiot zapewnia informacje na stronie internetowej?`
+	emailText += `\n   a) Tekst odczytywalny maszynowo: ${machine_readable_text}`
+	emailText += `\n   b) Nagrania PJM: ${pjm_video}`
+	emailText += `\n   c) Tekst łatwy do czytania (ETR): ${easy_read_text}`
+
+	emailText += `\n\n4. Czy podmiot otrzymał wniosek o szczególną formę komunikacji? ${communication_request}`
 
 	if (communication_request === 'TAK') {
-		emailText += `\n   Szczegóły komunikacji: ${communication_details}`
+		emailText += `\n   Liczba wniosków: ${communication_count || 0}`
+		emailText += `\n   Szczegóły komunikacji: ${communication_details || 'Brak dodatkowych informacji'}`
 	}
+
+	emailText += `\n\nKomentarze i uwagi dotyczące dostępności informacyjno-komunikacyjnej:
+${comments || 'Brak dodatkowych komentarzy'}`
 
 	return emailText
 }
