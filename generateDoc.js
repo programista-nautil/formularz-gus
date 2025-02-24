@@ -31,13 +31,17 @@ async function generateDocument(data) {
 				type: 'anyone',
 			},
 		})
-
 		console.log('Dokument udostępniony publicznie!')
 
 		// Pobranie zawartości dokumentu
 		const doc = await docs.documents.get({ documentId: newDocId })
 
 		const requests = []
+
+		// 🔹 Funkcja do obsługi checkboxów
+		function getCheckbox(value) {
+			return value === 'TAK' ? '☑' : '☐' // Uzupełniony lub pusty checkbox
+		}
 
 		// 🔹 Iteracja przez wszystkie elementy dokumentu
 		doc.data.body.content.forEach(element => {
@@ -46,12 +50,37 @@ async function generateDocument(data) {
 
 				Object.entries(data).forEach(([key, value]) => {
 					const variable = `{{${key}}}`
+					const yesCheckbox = `{{yes_checkbox_${key}}}`
+					const noCheckbox = `{{no_checkbox_${key}}}`
+
+					// 🔹 Standardowe zmienne tekstowe
 					if (fullText.includes(variable)) {
 						console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
 						requests.push({
 							replaceAllText: {
 								containsText: { text: variable, matchCase: true },
 								replaceText: value || 'Brak danych',
+							},
+						})
+					}
+
+					// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
+					if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
+						console.log(`Znaleziono checkbox dla: ${key}`)
+						const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
+						const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
+
+						requests.push({
+							replaceAllText: {
+								containsText: { text: yesCheckbox, matchCase: true },
+								replaceText: `TAK ${yesValue}`,
+							},
+						})
+
+						requests.push({
+							replaceAllText: {
+								containsText: { text: noCheckbox, matchCase: true },
+								replaceText: `NIE ${noValue}`,
 							},
 						})
 					}
@@ -68,6 +97,10 @@ async function generateDocument(data) {
 
 						Object.entries(data).forEach(([key, value]) => {
 							const variable = `{{${key}}}`
+							const yesCheckbox = `{{yes_checkbox_${key}}}`
+							const noCheckbox = `{{no_checkbox_${key}}}`
+
+							// 🔹 Standardowe zmienne tekstowe w tabeli
 							if (cellText.includes(variable)) {
 								console.log(`Znaleziono w tabeli: ${variable} -> Zamieniam na: ${value}`)
 								requests.push({
@@ -77,12 +110,34 @@ async function generateDocument(data) {
 									},
 								})
 							}
+
+							// 🔹 Zamiana checkboxów TAK/NIE w tabeli
+							if (cellText.includes(yesCheckbox) || cellText.includes(noCheckbox)) {
+								console.log(`Znaleziono checkbox w tabeli dla: ${key}`)
+								const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
+								const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
+
+								requests.push({
+									replaceAllText: {
+										containsText: { text: yesCheckbox, matchCase: true },
+										replaceText: `TAK ${yesValue}`,
+									},
+								})
+
+								requests.push({
+									replaceAllText: {
+										containsText: { text: noCheckbox, matchCase: true },
+										replaceText: `NIE ${noValue}`,
+									},
+								})
+							}
 						})
 					})
 				})
 			}
 		})
 
+		// 🔹 Aktualizacja dokumentu jeśli znaleziono zmienne
 		if (requests.length > 0) {
 			console.log('Zamiana zmiennych:', requests)
 			await docs.documents.batchUpdate({
