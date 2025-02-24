@@ -2,9 +2,11 @@ require('dotenv').config()
 const express = require('express')
 const nodemailer = require('nodemailer')
 const cors = require('cors')
+const { generateDocument } = require('./generateDoc')
 
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
 const transporter = nodemailer.createTransport({
@@ -221,6 +223,17 @@ app.post('/send-form', async (req, res) => {
 	} catch (error) {
 		console.error('Błąd wysyłania maila:', error)
 		res.status(500).send('Błąd serwera!')
+	}
+})
+
+app.post('/generate-document', async (req, res) => {
+	try {
+		console.log('Dane z requesta:', JSON.stringify(req.body, null, 2))
+
+		const docUrl = await generateDocument(req.body)
+		res.json({ success: true, url: docUrl })
+	} catch (error) {
+		res.status(500).json({ success: false, error: error.message })
 	}
 })
 

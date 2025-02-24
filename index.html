@@ -472,6 +472,7 @@
             <input type="email" id="user_email" name="user_email" required>
 
             <button type="submit">Wyślij</button>
+            <button id="generateDocButton" type="button">Uzupełnij dokument</button>
         </form>
     </div>
 
@@ -615,6 +616,26 @@
             });
         }
     }
+
+    document.getElementById('generateDocButton').addEventListener('click', async () => {
+        const formData = new FormData(document.getElementById('infoForm'));
+        let data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('http://localhost:3000/generate-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert(`Dokument został utworzony: ${result.url}`);
+            window.open(result.url, '_blank'); // Otwiera nowy dokument
+        } else {
+            alert('Wystąpił błąd podczas generowania dokumentu.');
+        }
+    });
+
 
 </script>
 
