@@ -3,7 +3,6 @@ const { authorize } = require('./googleAuth')
 require('dotenv').config()
 
 const TEMPLATE_DOC_ID = '1isWrnneAuczgSCm2Vfdy4-NuTWT9BI9AVw86lkh0B0k'
-const FOLDER_ID = '1zBgoC7awLF9c8RYHa6AhJgfxxZ7n8TUB'
 
 async function generateDocument(data) {
 	try {
@@ -16,7 +15,7 @@ async function generateDocument(data) {
 			fileId: TEMPLATE_DOC_ID,
 			requestBody: {
 				name: `Dokument ${new Date().toISOString()}`,
-				parents: [FOLDER_ID],
+				parents: [process.env.FOLDER_ID],
 			},
 		})
 
