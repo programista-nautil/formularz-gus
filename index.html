@@ -510,6 +510,7 @@
         <div id="bothActionButtons" class="actionButtons">
             <button id="sendBothFormsButton" type="button">Wyślij mail</button>
             <button id="generateBothDocsButton" type="button">Wygeneruj dokument</button>
+            <button id="saveToSheetButton" type="button">Zapisz do arkusza</button>
         </div>
     </div>
 
@@ -858,6 +859,59 @@
         } catch (error) {
             console.error("Błąd podczas generowania dokumentów:", error);
             alert("Wystąpił błąd podczas generowania dokumentów.");
+        }
+    });
+
+    document.getElementById('saveToSheetButton').addEventListener('click', async () => {
+        const archForm = document.getElementById('archForm');
+        const infoForm = document.getElementById('infoForm');
+
+        const archFormData = new FormData(archForm);
+        const infoFormData = new FormData(infoForm);
+
+        let archData = Object.fromEntries(archFormData.entries());
+        let infoData = Object.fromEntries(infoFormData.entries());
+
+        // Przetwarzanie checkboxów jako tablic
+        function processCheckboxes(formId, data) {
+            document.querySelectorAll(`#${formId} input[type="checkbox"]`).forEach((checkbox) => {
+                if (!data[checkbox.name]) {
+                    data[checkbox.name] = [];
+                } else if (!Array.isArray(data[checkbox.name])) {
+                    data[checkbox.name] = [data[checkbox.name]];
+                }
+            });
+
+            document.querySelectorAll(`#${formId} input[type="checkbox"]:checked`).forEach((checkbox) => {
+                if (!data[checkbox.name].includes(checkbox.value)) {
+                    data[checkbox.name].push(checkbox.value);
+                }
+            });
+        }
+
+        processCheckboxes('archForm', archData);
+        processCheckboxes('infoForm', infoData);
+
+        const combinedData = {
+            formType: "both",
+            architectural: archData,
+            informational: infoData
+        };
+
+        console.log("Zapisywanie do arkusza Google Sheets:", combinedData);
+
+        try {
+            const response = await fetch("http://localhost:3000/save-to-sheet", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(combinedData),
+            });
+
+            const result = await response.text();
+            alert(result);
+        } catch (error) {
+            console.error("Błąd podczas zapisu do arkusza:", error);
+            alert("Wystąpił błąd podczas zapisu do arkusza.");
         }
     });
 

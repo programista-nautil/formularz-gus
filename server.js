@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const { generateDocument } = require('./controllers/generateDoc')
 const { deleteGeneratedDocuments } = require('./controllers/deleteFiles')
+const { appendToGoogleSheet } = require('./controllers/appendToGoogleSheet')
 const { transporter, handleArchitecturalForm, handleInformationalForm } = require('./controllers/sendMail')
 
 const app = express()
@@ -75,6 +76,23 @@ app.post('/generate-document', async (req, res) => {
 	} catch (error) {
 		console.error('Błąd generowania dokumentu:', error)
 		res.status(500).json({ success: false, error: error.message })
+	}
+})
+
+app.post('/save-to-sheet', async (req, res) => {
+	try {
+		const { formType, architectural, informational } = req.body
+
+		if (formType !== 'both' || !architectural || !informational) {
+			return res.status(400).json({ success: false, message: 'Nieprawidłowe dane formularza.' })
+		}
+
+		await appendToGoogleSheet(architectural, informational)
+
+		res.send('Dane zostały zapisane do arkusza GUS-Nowy!')
+	} catch (error) {
+		console.error('❌ Błąd zapisu do Google Sheets:', error)
+		res.status(500).send('Wystąpił błąd podczas zapisu do arkusza.')
 	}
 })
 
