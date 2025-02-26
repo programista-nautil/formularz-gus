@@ -1,9 +1,7 @@
 const { google } = require('googleapis')
 const { authorize } = require('./googleAuth')
 
-const SHEET_ID = '1ttdyySavO0xv94NQ_7phpT0csOJHY8_9qlJ5fU3noCs'
-
-async function appendToGoogleSheet(architecturalData, informationalData) {
+async function appendToGoogleSheet(sheetId, architecturalData, informationalData) {
 	try {
 		const auth = await authorize()
 		const sheets = google.sheets({ version: 'v4', auth })
@@ -13,7 +11,7 @@ async function appendToGoogleSheet(architecturalData, informationalData) {
 		// 🕒 Wpisanie aktualnej daty do komórki B1
 		const currentDate = new Date().toLocaleString()
 		await sheets.spreadsheets.values.update({
-			spreadsheetId: SHEET_ID,
+			spreadsheetId: sheetId,
 			range: `${sheetName}!B1`,
 			valueInputOption: 'RAW',
 			resource: { values: [[currentDate]] },
@@ -44,7 +42,7 @@ async function appendToGoogleSheet(architecturalData, informationalData) {
 			let value = architecturalData[key] || ''
 			if (Array.isArray(value)) value = value.join(', ') // Obsługa checkboxów
 			await sheets.spreadsheets.values.update({
-				spreadsheetId: SHEET_ID,
+				spreadsheetId: sheetId,
 				range: `${sheetName}!${cell}`,
 				valueInputOption: 'RAW',
 				resource: { values: [[value]] },
@@ -77,7 +75,7 @@ async function appendToGoogleSheet(architecturalData, informationalData) {
 			let value = informationalData[key] || ''
 			if (Array.isArray(value)) value = value.join(', ') // Obsługa checkboxów
 			await sheets.spreadsheets.values.update({
-				spreadsheetId: SHEET_ID,
+				spreadsheetId: sheetId,
 				range: `${sheetName}!${cell}`,
 				valueInputOption: 'RAW',
 				resource: { values: [[value]] },
@@ -102,7 +100,7 @@ async function appendToGoogleSheet(architecturalData, informationalData) {
 				.join(', ')
 
 			await sheets.spreadsheets.values.update({
-				spreadsheetId: SHEET_ID,
+				spreadsheetId: sheetId,
 				range: `${sheetName}!${cell}`,
 				valueInputOption: 'RAW',
 				resource: { values: [[values]] },

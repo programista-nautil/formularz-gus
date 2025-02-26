@@ -510,9 +510,13 @@
         <div id="bothActionButtons" class="actionButtons">
             <button id="sendBothFormsButton" type="button">Wyślij mail</button>
             <button id="generateBothDocsButton" type="button">Wygeneruj dokument</button>
+
+            <!-- Nowe pole do wpisania ID arkusza -->
+            <input type="text" id="sheetIdInput" placeholder="Wpisz ID arkusza Google">
             <button id="saveToSheetButton" type="button">Zapisz do arkusza</button>
         </div>
     </div>
+
 
 
 
@@ -865,6 +869,12 @@
     document.getElementById('saveToSheetButton').addEventListener('click', async () => {
         const archForm = document.getElementById('archForm');
         const infoForm = document.getElementById('infoForm');
+        const sheetId = document.getElementById("sheetIdInput").value.trim();
+
+        if (!sheetId) {
+            alert("Proszę wpisać ID arkusza przed zapisaniem.");
+            return;
+        }
 
         const archFormData = new FormData(archForm);
         const infoFormData = new FormData(infoForm);
@@ -893,6 +903,7 @@
         processCheckboxes('infoForm', infoData);
 
         const combinedData = {
+            sheetId,
             formType: "both",
             architectural: archData,
             informational: infoData

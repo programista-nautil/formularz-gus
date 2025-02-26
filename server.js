@@ -81,13 +81,13 @@ app.post('/generate-document', async (req, res) => {
 
 app.post('/save-to-sheet', async (req, res) => {
 	try {
-		const { formType, architectural, informational } = req.body
+		const { sheetId, formType, architectural, informational } = req.body
 
-		if (formType !== 'both' || !architectural || !informational) {
+		if (formType !== 'both' || !architectural || !informational || !sheetId) {
 			return res.status(400).json({ success: false, message: 'Nieprawidłowe dane formularza.' })
 		}
 
-		await appendToGoogleSheet(architectural, informational)
+		await appendToGoogleSheet(sheetId, architectural, informational)
 
 		res.send('Dane zostały zapisane do arkusza GUS-Nowy!')
 	} catch (error) {
