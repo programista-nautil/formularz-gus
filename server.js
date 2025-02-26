@@ -13,7 +13,7 @@ app.use(cors())
 // Główna funkcja obsługująca formularze
 app.post('/send-form', async (req, res) => {
 	try {
-		const { formType, user_email } = req.body
+		const { formType, user_email, architectural, informational } = req.body
 
 		let emailText = ''
 
@@ -21,15 +21,24 @@ app.post('/send-form', async (req, res) => {
 			emailText = handleArchitecturalForm(req.body)
 		} else if (formType === 'informational') {
 			emailText = handleInformationalForm(req.body)
+		} else if (formType === 'both' && architectural && informational) {
+			// Obsługa obu formularzy
+			const archText = handleArchitecturalForm(architectural)
+			const infoText = handleInformationalForm(informational)
+			emailText = `📌 **Dostępność Architektoniczna:**\n${archText}\n\n📌 **Dostępność Informacyjno-Komunikacyjna:**\n${infoText}`
 		} else {
-			return res.status(400).send('Nieznany typ formularza.')
+			return res.status(400).send('Nieznany typ formularza lub brak danych.')
 		}
 
 		const mailOptions = {
 			from: process.env.EMAIL_USER,
 			to: user_email,
 			subject: `Formularz GUS - ${
-				formType === 'architectural' ? 'Dostępność Architektoniczna' : 'Dostępność Informacyjno-Komunikacyjna'
+				formType === 'both'
+					? 'Dostępność Architektoniczna i Informacyjna'
+					: formType === 'architectural'
+					? 'Dostępność Architektoniczna'
+					: 'Dostępność Informacyjno-Komunikacyjna'
 			}`,
 			text: emailText,
 		}
@@ -46,9 +55,25 @@ app.post('/generate-document', async (req, res) => {
 	try {
 		console.log('Dane z requesta:', JSON.stringify(req.body, null, 2))
 
-		const docUrl = await generateDocument(req.body)
+		let combinedData
+
+		if (req.body.formType === 'both') {
+			// Łączenie danych z obu formularzy w jeden obiekt
+			combinedData = {
+				...req.body.architectural,
+				...req.body.informational,
+			}
+		} else {
+			// Jeśli generujemy tylko jeden formularz, używamy przekazanych danych
+			combinedData = req.body
+		}
+
+		// Generowanie dokumentu z połączonymi danymi
+		const docUrl = await generateDocument(combinedData)
+
 		res.json({ success: true, url: docUrl })
 	} catch (error) {
+		console.error('Błąd generowania dokumentu:', error)
 		res.status(500).json({ success: false, error: error.message })
 	}
 })

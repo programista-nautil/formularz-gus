@@ -288,7 +288,6 @@
                 <button type="submit">Wyślij mail</button>
                 <button id="generateArchDocButton" type="button">Wygeneruj dokument</button>
             </div>
-
         </form>
     </div>
 
@@ -501,6 +500,15 @@
 
         </form>
     </div>
+
+    <div class="container container-gap">
+        <button id="sendBothFormsButton">Wyślij oba formularze</button>
+    </div>
+
+    <div class="container container-gap">
+        <button id="generateBothDocsButton">Generuj oba dokumenty</button>
+    </div>
+
 
 </body>
 <script>
@@ -731,6 +739,120 @@
             window.open(result.url, '_blank'); // Otwiera nowy dokument
         } else {
             alert('Wystąpił błąd podczas generowania dokumentu.');
+        }
+    });
+
+    document.getElementById('sendBothFormsButton').addEventListener('click', async () => {
+        const archForm = document.getElementById('archForm');
+        const infoForm = document.getElementById('infoForm');
+
+        const archFormData = new FormData(archForm);
+        const infoFormData = new FormData(infoForm);
+
+        let archData = Object.fromEntries(archFormData.entries());
+        let infoData = Object.fromEntries(infoFormData.entries());
+
+        // Przetwarzanie checkboxów jako tablic
+        function processCheckboxes(formId, data) {
+            document.querySelectorAll(`#${formId} input[type="checkbox"]`).forEach((checkbox) => {
+                if (!data[checkbox.name]) {
+                    data[checkbox.name] = [];
+                } else if (!Array.isArray(data[checkbox.name])) {
+                    data[checkbox.name] = [data[checkbox.name]];
+                }
+            });
+
+            document.querySelectorAll(`#${formId} input[type="checkbox"]:checked`).forEach((checkbox) => {
+                if (!data[checkbox.name].includes(checkbox.value)) {
+                    data[checkbox.name].push(checkbox.value);
+                }
+            });
+        }
+
+        processCheckboxes('archForm', archData);
+        processCheckboxes('infoForm', infoData);
+
+        const combinedData = {
+            formType: "both", // Dodanie formType dla serwera!
+            user_email: document.getElementById("user_email").value, // Pobranie emaila
+            architectural: archData,
+            informational: infoData
+        };
+
+        console.log("Wysyłanie obu formularzy:", combinedData);
+
+        try {
+            const response = await fetch("http://localhost:3000/send-form", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(combinedData),
+            });
+
+            const result = await response.text();
+            alert(result);
+        } catch (error) {
+            console.error("Błąd podczas wysyłania formularzy:", error);
+            alert("Wystąpił błąd podczas wysyłania formularzy.");
+        }
+    });
+
+    document.getElementById('generateBothDocsButton').addEventListener('click', async () => {
+        const archForm = document.getElementById('archForm');
+        const infoForm = document.getElementById('infoForm');
+
+        const archFormData = new FormData(archForm);
+        const infoFormData = new FormData(infoForm);
+
+        let archData = Object.fromEntries(archFormData.entries());
+        let infoData = Object.fromEntries(infoFormData.entries());
+
+        // Przetwarzanie checkboxów jako tablic
+        function processCheckboxes(formId, data) {
+            document.querySelectorAll(`#${formId} input[type="checkbox"]`).forEach((checkbox) => {
+                if (!data[checkbox.name]) {
+                    data[checkbox.name] = [];
+                } else if (!Array.isArray(data[checkbox.name])) {
+                    data[checkbox.name] = [data[checkbox.name]];
+                }
+            });
+
+            document.querySelectorAll(`#${formId} input[type="checkbox"]:checked`).forEach((checkbox) => {
+                if (!data[checkbox.name].includes(checkbox.value)) {
+                    data[checkbox.name].push(checkbox.value);
+                }
+            });
+        }
+
+        processCheckboxes('archForm', archData);
+        processCheckboxes('infoForm', infoData);
+
+        const combinedData = {
+            formType: "both", // Dodanie formType dla serwera!
+            user_email: document.getElementById("user_email").value, // Pobranie emaila
+            architectural: archData,
+            informational: infoData
+        };
+
+        console.log("Generowanie obu dokumentów:", combinedData);
+
+        try {
+            const response = await fetch("http://localhost:3000/generate-document", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(combinedData),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(`Dokumenty zostały utworzone:\nArchitektoniczny: ${result.arch_url}\nInformacyjny: ${result.info_url}`);
+                window.open(result.arch_url, '_blank');
+                window.open(result.info_url, '_blank');
+            } else {
+                alert('Wystąpił błąd podczas generowania dokumentów.');
+            }
+        } catch (error) {
+            console.error("Błąd podczas generowania dokumentów:", error);
+            alert("Wystąpił błąd podczas generowania dokumentów.");
         }
     });
 
