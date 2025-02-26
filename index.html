@@ -151,6 +151,22 @@
             margin-bottom: 10px;
             /* Zapobiega ściskaniu poniższych elementów */
         }
+
+        .actionButtons {
+            display: none;
+            /* Ukryty domyślnie */
+            gap: 10px;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .actionButtons.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -266,8 +282,13 @@
             <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
             <input type="email" id="user_email" name="user_email" required>
 
-            <button type="submit">Wyślij mail</button>
-            <button id="generateArchDocButton" type="button">Wygeneruj dokument</button>
+            <!-- Formularz Architektoniczny -->
+            <button type="button" class="showActionsButton" data-target="archActionButtons">Wyślij</button>
+            <div id="archActionButtons" class="actionButtons">
+                <button type="submit">Wyślij mail</button>
+                <button id="generateArchDocButton" type="button">Wygeneruj dokument</button>
+            </div>
+
         </form>
     </div>
 
@@ -472,8 +493,12 @@
             <label for="user_email">Podaj adres e-mail:</label>
             <input type="email" id="user_email" name="user_email" required>
 
-            <button type="submit">Wyślij mail</button>
-            <button id="generateInfoDocButton" type="button">Wygeneruj dokument</button>
+            <button type="button" class="showActionsButton" data-target="infoActionButtons">Wyślij</button>
+            <div id="infoActionButtons" class="actionButtons">
+                <button type="submit">Wyślij mail</button>
+                <button id="generateInfoDocButton" type="button">Wygeneruj dokument</button>
+            </div>
+
         </form>
     </div>
 
@@ -528,6 +553,21 @@
         // Obsługa formularza Dostępności Informacyjno-Komunikacyjnej (jeśli istnieje)
         document.getElementById("infoForm")?.addEventListener("submit", function (event) {
             handleFormSubmit(event, "informational");
+        });
+
+        const showButtons = document.querySelectorAll(".showActionsButton");
+
+        showButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const targetId = this.getAttribute("data-target");
+                const actionButtons = document.getElementById(targetId);
+
+                this.style.display = "none"; // Ukrywa przycisk "Wyślij"
+                actionButtons.style.display = "flex"; // Pokazuje kontener przycisków
+                setTimeout(() => {
+                    actionButtons.classList.add("show"); // Aktywuje animację
+                }, 10); // Krótkie opóźnienie, aby animacja działała płynnie
+            });
         });
     });
 
