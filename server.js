@@ -3,6 +3,7 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const cors = require('cors')
 const { generateDocument } = require('./generateDoc')
+const { deleteGeneratedDocuments } = require('./deleteFiles')
 
 const app = express()
 app.use(express.json())
@@ -232,6 +233,16 @@ app.post('/generate-document', async (req, res) => {
 
 		const docUrl = await generateDocument(req.body)
 		res.json({ success: true, url: docUrl })
+	} catch (error) {
+		res.status(500).json({ success: false, error: error.message })
+	}
+})
+
+// Endpoint do ręcznego wywołania usuwania plików curl -X DELETE http://localhost:3000/delete-generated-docs
+app.delete('/delete-generated-docs', async (req, res) => {
+	try {
+		await deleteGeneratedDocuments()
+		res.json({ success: true, message: 'Wygenerowane dokumenty zostały usunięte.' })
 	} catch (error) {
 		res.status(500).json({ success: false, error: error.message })
 	}

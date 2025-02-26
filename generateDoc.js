@@ -54,70 +54,123 @@ async function generateDocument(data) {
 			return valueMap[selectedValue] === checkboxValue ? '☑' : '☐'
 		}
 
+		// 🔹 Funkcja do obsługi dynamicznych checkboxów dla wielu opcji
+		function getMultiCheckbox(valueArray, options) {
+			// Upewniamy się, że `valueArray` to zawsze tablica
+			if (!Array.isArray(valueArray)) {
+				valueArray = [valueArray]
+			}
+
+			// Normalizujemy wartości, aby uniknąć problemów z porównaniem (np. spacje, różne formatowanie)
+			const normalizedValues = valueArray.map(v => v.trim().toLowerCase())
+
+			return options.map(opt => (normalizedValues.includes(opt.trim().toLowerCase()) ? '☑' : '☐'))
+		}
+
 		// 🔹 Iteracja przez wszystkie elementy dokumentu
 		doc.data.body.content.forEach(element => {
-			// if (element.paragraph?.elements) {
-			// 	let fullText = element.paragraph.elements.map(e => e.textRun?.content || '').join('')
+			if (element.paragraph?.elements) {
+				let fullText = element.paragraph.elements.map(e => e.textRun?.content || '').join('')
 
-			// 	Object.entries(data).forEach(([key, value]) => {
-			// 		const variable = `{{${key}}}`
-			// 		const yesCheckbox = `{{yes_checkbox_${key}}}`
-			// 		const noCheckbox = `{{no_checkbox_${key}}}`
+				Object.entries(data).forEach(([key, value]) => {
+					const variable = `{{${key}}}`
+					const yesCheckbox = `{{yes_checkbox_${key}}}`
+					const noCheckbox = `{{no_checkbox_${key}}}`
 
-			// 		// 🔹 Standardowe zmienne tekstowe
-			// 		if (fullText.includes(variable)) {
-			// 			console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
-			// 			requests.push({
-			// 				replaceAllText: {
-			// 					containsText: { text: variable, matchCase: true },
-			// 					replaceText: value || 'Brak danych',
-			// 				},
-			// 			})
-			// 		}
+					// 🔹 Standardowe zmienne tekstowe
+					if (fullText.includes(variable)) {
+						console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
+						requests.push({
+							replaceAllText: {
+								containsText: { text: variable, matchCase: true },
+								replaceText: value || 'Brak danych',
+							},
+						})
+					}
 
-			// 		// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
-			// 		if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
-			// 			console.log(`Znaleziono checkbox dla: ${key}`)
-			// 			const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
-			// 			const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
+					// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
+					if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
+						console.log(`Znaleziono checkbox dla: ${key}`)
+						const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
+						const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
 
-			// 			requests.push({
-			// 				replaceAllText: {
-			// 					containsText: { text: yesCheckbox, matchCase: true },
-			// 					replaceText: `TAK ${yesValue}`,
-			// 				},
-			// 			})
+						requests.push({
+							replaceAllText: {
+								containsText: { text: yesCheckbox, matchCase: true },
+								replaceText: `TAK ${yesValue}`,
+							},
+						})
 
-			// 			requests.push({
-			// 				replaceAllText: {
-			// 					containsText: { text: noCheckbox, matchCase: true },
-			// 					replaceText: `NIE ${noValue}`,
-			// 				},
-			// 			})
-			// 		}
+						requests.push({
+							replaceAllText: {
+								containsText: { text: noCheckbox, matchCase: true },
+								replaceText: `NIE ${noValue}`,
+							},
+						})
+					}
 
-			// 		if (key === 'sign_lang_time') {
-			// 			console.log(`Obsługa checkboxów dla sign_lang_time: ${value}`)
+					if (key === 'sign_lang_time') {
+						console.log(`Obsługa checkboxów dla sign_lang_time: ${value}`)
 
-			// 			const options = [
-			// 				'od razu',
-			// 				'w ciągu 1 dnia roboczego',
-			// 				'w ciągu 2-3 dni roboczych',
-			// 				'powyżej 3 dni roboczych',
-			// 			]
+						const options = [
+							'od razu',
+							'w ciągu 1 dnia roboczego',
+							'w ciągu 2-3 dni roboczych',
+							'powyżej 3 dni roboczych',
+						]
 
-			// 			options.forEach((opt, index) => {
-			// 				const checkboxVariable = `{{checkbox_sign_lang_time_${index + 1}}}`
-			// 				requests.push({
-			// 					replaceAllText: {
-			// 						containsText: { text: checkboxVariable, matchCase: true },
-			// 						replaceText: getSignLangCheckbox(value, opt),
-			// 					},
-			// 				})
-			// 			})
-			// 		}
-			// 	})
-			// }
+						options.forEach((opt, index) => {
+							const checkboxVariable = `{{checkbox_sign_lang_time_${index + 1}}}`
+							requests.push({
+								replaceAllText: {
+									containsText: { text: checkboxVariable, matchCase: true },
+									replaceText: getSignLangCheckbox(value, opt),
+								},
+							})
+						})
+					}
+
+					// 🔹 Checkboxy dla room_access_solutions (3 opcje)
+					if (key === 'room_access_solutions' && Array.isArray(value)) {
+						console.log(`Obsługa checkboxów dla room_access_solutions: ${value}`)
+
+						const options = ['Rozwiązania architektoniczne', 'Środki techniczne', 'Zainstalowane urządzenia']
+						const checkboxes = getMultiCheckbox(value, options)
+
+						options.forEach((opt, index) => {
+							const checkboxVariable = `{{checkbox_room_access_solutions_${index + 1}}}`
+							requests.push({
+								replaceAllText: {
+									containsText: { text: checkboxVariable, matchCase: true },
+									replaceText: checkboxes[index],
+								},
+							})
+						})
+					}
+
+					// 🔹 Checkboxy dla evacuation_methods (3 opcje)
+					if (key === 'evacuation_methods' && Array.isArray(value)) {
+						console.log(`Obsługa checkboxów dla evacuation_methods: ${value}`)
+
+						const options = [
+							'Procedury ewakuacji lub ratowania',
+							'Sprzęt lub miejsce do ewakuacji lub ratowania',
+							'Pracowników przeszkolonych z procedur ewakuacji lub ratowania',
+						]
+						const checkboxes = getMultiCheckbox(value, options)
+
+						options.forEach((opt, index) => {
+							const checkboxVariable = `{{checkbox_evacuation_methods_${index + 1}}}`
+							requests.push({
+								replaceAllText: {
+									containsText: { text: checkboxVariable, matchCase: true },
+									replaceText: checkboxes[index],
+								},
+							})
+						})
+					}
+				})
+			}
 
 			// 🔹 Sprawdzanie tabel
 			if (element.table) {
@@ -180,6 +233,46 @@ async function generateDocument(data) {
 										replaceAllText: {
 											containsText: { text: checkboxVariable, matchCase: true },
 											replaceText: getSignLangCheckbox(value, opt),
+										},
+									})
+								})
+							}
+
+							if (cellText.includes(`{{checkbox_room_access_solutions_`)) {
+								console.log(`Znaleziono checkbox w tabeli dla room_access_solutions`)
+								const options = ['Rozwiązania architektoniczne', 'Środki techniczne', 'Zainstalowane urządzenia']
+								const selectedValues = Array.isArray(value) ? value : [value] // Upewnienie się, że `value` to tablica
+								const checkboxes = getMultiCheckbox(selectedValues, options)
+
+								options.forEach((opt, index) => {
+									const checkboxVariable = `{{checkbox_room_access_solutions_${index + 1}}}`
+									console.log(`Zamieniam: ${checkboxVariable} -> ${checkboxes[index]}`)
+									requests.push({
+										replaceAllText: {
+											containsText: { text: checkboxVariable, matchCase: true },
+											replaceText: checkboxes[index],
+										},
+									})
+								})
+							}
+
+							if (cellText.includes(`{{checkbox_evacuation_methods_`)) {
+								console.log(`Znaleziono checkbox w tabeli dla evacuation_methods`)
+								const options = [
+									'Procedury ewakuacji lub ratowania',
+									'Sprzęt lub miejsce do ewakuacji lub ratowania',
+									'Pracowników przeszkolonych z procedur ewakuacji lub ratowania',
+								]
+								const selectedValues = Array.isArray(value) ? value : [value] // Upewnienie się, że `value` to tablica
+								const checkboxes = getMultiCheckbox(selectedValues, options)
+
+								options.forEach((opt, index) => {
+									const checkboxVariable = `{{checkbox_evacuation_methods_${index + 1}}}`
+									console.log(`Zamieniam: ${checkboxVariable} -> ${checkboxes[index]}`)
+									requests.push({
+										replaceAllText: {
+											containsText: { text: checkboxVariable, matchCase: true },
+											replaceText: checkboxes[index],
 										},
 									})
 								})

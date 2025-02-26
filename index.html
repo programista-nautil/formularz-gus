@@ -261,12 +261,13 @@
                 stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
                 Informacji Publicznej – na swojej stronie internetowej.
             </p>
-            <textarea id="comments" name="comments" rows="4"></textarea>
+            <textarea id="comments" name="arch_comments" rows="4"></textarea>
 
             <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
             <input type="email" id="user_email" name="user_email" required>
 
-            <button type="submit">Wyślij</button>
+            <button type="submit">Wyślij mail</button>
+            <button id="generateArchDocButton" type="button">Wygeneruj dokument</button>
         </form>
     </div>
 
@@ -471,8 +472,8 @@
             <label for="user_email">Podaj adres e-mail:</label>
             <input type="email" id="user_email" name="user_email" required>
 
-            <button type="submit">Wyślij</button>
-            <button id="generateDocButton" type="button">Uzupełnij dokument</button>
+            <button type="submit">Wyślij mail</button>
+            <button id="generateInfoDocButton" type="button">Wygeneruj dokument</button>
         </form>
     </div>
 
@@ -617,9 +618,66 @@
         }
     }
 
-    document.getElementById('generateDocButton').addEventListener('click', async () => {
-        const formData = new FormData(document.getElementById('infoForm'));
+    document.getElementById('generateInfoDocButton').addEventListener('click', async () => {
+        const form = document.getElementById('infoForm');
+        const formData = new FormData(form);
         let data = Object.fromEntries(formData.entries());
+
+        // Przetwarzanie checkboxów jako tablic
+        document.querySelectorAll(`#${form.id} input[type="checkbox"]`).forEach((checkbox) => {
+            if (!data[checkbox.name]) {
+                data[checkbox.name] = []; // Inicjalizacja jako tablica
+            } else if (!Array.isArray(data[checkbox.name])) {
+                data[checkbox.name] = [data[checkbox.name]]; // Konwersja do tablicy
+            }
+        });
+
+        // Dodawanie zaznaczonych wartości
+        document.querySelectorAll(`#${form.id} input[type="checkbox"]:checked`).forEach((checkbox) => {
+            if (!data[checkbox.name].includes(checkbox.value)) {
+                data[checkbox.name].push(checkbox.value);
+            }
+        });
+
+        console.log("Generowanie dokumentu - infoForm:", data);
+
+        const response = await fetch('http://localhost:3000/generate-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert(`Dokument został utworzony: ${result.url}`);
+            window.open(result.url, '_blank'); // Otwiera nowy dokument
+        } else {
+            alert('Wystąpił błąd podczas generowania dokumentu.');
+        }
+    });
+
+    document.getElementById('generateArchDocButton').addEventListener('click', async () => {
+        const form = document.getElementById('archForm');
+        const formData = new FormData(form);
+        let data = Object.fromEntries(formData.entries());
+
+        // Przetwarzanie checkboxów jako tablic
+        document.querySelectorAll(`#${form.id} input[type="checkbox"]`).forEach((checkbox) => {
+            if (!data[checkbox.name]) {
+                data[checkbox.name] = []; // Inicjalizacja jako tablica
+            } else if (!Array.isArray(data[checkbox.name])) {
+                data[checkbox.name] = [data[checkbox.name]]; // Konwersja do tablicy
+            }
+        });
+
+        // Dodawanie zaznaczonych wartości
+        document.querySelectorAll(`#${form.id} input[type="checkbox"]:checked`).forEach((checkbox) => {
+            if (!data[checkbox.name].includes(checkbox.value)) {
+                data[checkbox.name].push(checkbox.value);
+            }
+        });
+
+        console.log("Generowanie dokumentu - archForm:", data);
 
         const response = await fetch('http://localhost:3000/generate-document', {
             method: 'POST',
