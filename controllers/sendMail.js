@@ -185,4 +185,25 @@ ${comments || 'Brak dodatkowych komentarzy'}`
 	return emailText
 }
 
-module.exports = { transporter, handleArchitecturalForm, handleInformationalForm }
+function handleMainDataForm(data) {
+	const formattedData = {
+		name: data?.institution_name || 'Brak',
+		regon: data?.regon?.trim() ? data.regon : 'Brak',
+		email_secretariat: data?.email_secretariat || 'Brak',
+		voivodeship: data?.province || 'Brak',
+		county: data?.county || 'Brak',
+		commune: data?.municipality || 'Brak',
+	}
+
+	let emailText = `Dane podmiotu publicznego\n`
+	emailText += `   • Nazwa i adres: ${formattedData.name}\n`
+	emailText += `   • REGON: ${formattedData.regon}\n`
+	emailText += `   • E-mail sekretariatu: ${formattedData.email_secretariat}\n`
+	emailText += `   • Województwo: ${formattedData.voivodeship} \n`
+	emailText += `   • Powiat: ${formattedData.county} \n`
+	emailText += `   • Gmina: ${formattedData.commune} \n`
+
+	return emailText
+}
+
+module.exports = { transporter, handleArchitecturalForm, handleInformationalForm, handleMainDataForm }

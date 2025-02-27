@@ -14,6 +14,7 @@
 
         .container {
             max-width: 700px;
+            height: auto;
             margin: auto;
             background: white;
             padding: 20px;
@@ -584,16 +585,26 @@
 
     <div class="container container-gap">
         <button type="button" class="showActionsButton" data-target="bothActionButtons">
-            Wyślij oba formularze
+            Wyślij
         </button>
-        <div id="bothActionButtons" class="actionButtons">
-            <button id="sendBothFormsButton" type="button">Wyślij mail</button>
-            <button id="generateBothDocsButton" type="button">Wygeneruj dokument</button>
+        <div id="bothActionButtons" class="actionButtons"
+            style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <button id="sendBothFormsButton" type="button"
+                style="width: 100%; padding: 10px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #FFC107; color: white; border: none; border-radius: 5px;">Wyślij
+                mail</button>
+            <button id="generateBothDocsButton" type="button"
+                style="width: 100%; padding: 10px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #007BFF; color: white; border: none; border-radius: 5px;">Wygeneruj
+                dokument</button>
 
             <!-- Nowe pole do wpisania ID arkusza -->
-            <div style="display: flex; flex-direction: column;">
-                <input type="text" id="sheetIdInput" placeholder="Wpisz ID arkusza Google">
-                <button id="saveToSheetButton" type="button">Zapisz do arkusza</button>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%;">
+                <input type="text" id="sheetIdInput" placeholder="Wpisz ID arkusza Google"
+                    style="width: calc(100% - 20px); padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px;">
+
+                <button id="saveToSheetButton" type="button"
+                    style="width: 100%;  font-size: 16px; font-weight: bold; cursor: pointer; background-color: #28A745; color: black; border: none; border-radius: 5px;">
+                    Zapisz do arkusza
+                </button>
             </div>
         </div>
 
@@ -602,10 +613,6 @@
             <div class="spinner"></div>
         </div>
     </div>
-
-
-
-
 
 </body>
 <script>
@@ -851,12 +858,20 @@
         showLoading();
         const archForm = document.getElementById('archForm');
         const infoForm = document.getElementById('infoForm');
+        const mainDataForm = document.getElementById('mainDataForm');
 
         const archFormData = new FormData(archForm);
         const infoFormData = new FormData(infoForm);
+        const mainDataFormData = new FormData(mainDataForm);
 
         let archData = Object.fromEntries(archFormData.entries());
         let infoData = Object.fromEntries(infoFormData.entries());
+        let mainData = Object.fromEntries(mainDataFormData.entries());
+
+        // Jeśli numer REGON jest pusty, wpisujemy "Brak"
+        if (!mainData.regon || mainData.regon.trim() === "") {
+            mainData.regon = "Brak";
+        }
 
         // Przetwarzanie checkboxów jako tablic
         function processCheckboxes(formId, data) {
@@ -881,6 +896,7 @@
         const combinedData = {
             formType: "both", // Dodanie formType dla serwera!
             user_email: document.getElementById("user_email").value, // Pobranie emaila
+            mainData: mainData,
             architectural: archData,
             informational: infoData
         };
@@ -962,9 +978,8 @@
 
             const result = await response.json();
             if (result.success) {
-                alert(`Dokument został utworzony.`);
-                window.open(result.arch_url, '_blank');
-                window.open(result.info_url, '_blank');
+                alert(`Dokument został utworzony. Link - ${result.url}`);
+                window.open(result.url, '_blank');
             } else {
                 alert('Wystąpił błąd podczas generowania dokumentów.');
             }

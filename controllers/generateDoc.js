@@ -20,7 +20,6 @@ async function generateDocument(data) {
 		})
 
 		const newDocId = copy.data.id
-		console.log(`Utworzono kopię: ${newDocId}`)
 
 		// 🔹 Nadanie uprawnień wszystkim użytkownikom
 		await drive.permissions.create({
@@ -30,8 +29,6 @@ async function generateDocument(data) {
 				type: 'anyone',
 			},
 		})
-		console.log('Dokument udostępniony publicznie!')
-
 		// Pobranie zawartości dokumentu
 		const doc = await docs.documents.get({ documentId: newDocId })
 
@@ -93,7 +90,6 @@ async function generateDocument(data) {
 
 					// 🔹 Standardowe zmienne tekstowe
 					if (fullText.includes(variable)) {
-						console.log(`Znaleziono: ${variable} -> Zamieniam na: ${value}`)
 						requests.push({
 							replaceAllText: {
 								containsText: { text: variable, matchCase: true },
@@ -104,7 +100,6 @@ async function generateDocument(data) {
 
 					// 🔹 Zamiana TAK/NIE checkboxów z wyświetleniem "TAK ☐ NIE ☐"
 					if (fullText.includes(yesCheckbox) || fullText.includes(noCheckbox)) {
-						console.log(`Znaleziono checkbox dla: ${key}`)
 						const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
 						const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
 
@@ -124,8 +119,6 @@ async function generateDocument(data) {
 					}
 
 					if (key === 'sign_lang_time') {
-						console.log(`Obsługa checkboxów dla sign_lang_time: ${value}`)
-
 						const options = [
 							'od razu',
 							'w ciągu 1 dnia roboczego',
@@ -146,8 +139,6 @@ async function generateDocument(data) {
 
 					// 🔹 Checkboxy dla room_access_solutions (3 opcje)
 					if (key === 'room_access_solutions' && Array.isArray(value)) {
-						console.log(`Obsługa checkboxów dla room_access_solutions: ${value}`)
-
 						const options = ['Rozwiązania architektoniczne', 'Środki techniczne', 'Zainstalowane urządzenia']
 						const checkboxes = getMultiCheckbox(value, options)
 
@@ -164,8 +155,6 @@ async function generateDocument(data) {
 
 					// 🔹 Checkboxy dla evacuation_methods (3 opcje)
 					if (key === 'evacuation_methods' && Array.isArray(value)) {
-						console.log(`Obsługa checkboxów dla evacuation_methods: ${value}`)
-
 						const options = [
 							'Procedury ewakuacji lub ratowania',
 							'Sprzęt lub miejsce do ewakuacji lub ratowania',
@@ -201,7 +190,6 @@ async function generateDocument(data) {
 
 							// 🔹 Standardowe zmienne tekstowe w tabeli
 							if (cellText.includes(variable)) {
-								console.log(`Znaleziono w tabeli: ${variable} -> Zamieniam na: ${value}`)
 								requests.push({
 									replaceAllText: {
 										containsText: { text: variable, matchCase: true },
@@ -212,7 +200,6 @@ async function generateDocument(data) {
 
 							// 🔹 Zamiana checkboxów TAK/NIE w tabeli
 							if (cellText.includes(yesCheckbox) || cellText.includes(noCheckbox)) {
-								console.log(`Znaleziono checkbox w tabeli dla: ${key}`)
 								const yesValue = getCheckbox(value === 'TAK' ? 'TAK' : 'NIE')
 								const noValue = getCheckbox(value === 'NIE' ? 'TAK' : 'NIE')
 
@@ -232,8 +219,6 @@ async function generateDocument(data) {
 							}
 
 							if (cellText.includes(`{{checkbox_sign_lang_time_`)) {
-								console.log(`Znaleziono checkbox w tabeli dla sign_lang_time`)
-
 								const options = [
 									'od razu',
 									'w ciągu 1 dnia roboczego',
@@ -253,14 +238,12 @@ async function generateDocument(data) {
 							}
 
 							if (cellText.includes(`{{checkbox_room_access_solutions_`)) {
-								console.log(`Znaleziono checkbox w tabeli dla room_access_solutions`)
 								const options = ['Rozwiązania architektoniczne', 'Środki techniczne', 'Zainstalowane urządzenia']
 								const selectedValues = Array.isArray(value) ? value : [value] // Upewnienie się, że `value` to tablica
 								const checkboxes = getMultiCheckbox(selectedValues, options)
 
 								options.forEach((opt, index) => {
 									const checkboxVariable = `{{checkbox_room_access_solutions_${index + 1}}}`
-									console.log(`Zamieniam: ${checkboxVariable} -> ${checkboxes[index]}`)
 									requests.push({
 										replaceAllText: {
 											containsText: { text: checkboxVariable, matchCase: true },
@@ -271,7 +254,6 @@ async function generateDocument(data) {
 							}
 
 							if (cellText.includes(`{{checkbox_evacuation_methods_`)) {
-								console.log(`Znaleziono checkbox w tabeli dla evacuation_methods`)
 								const options = [
 									'Procedury ewakuacji lub ratowania',
 									'Sprzęt lub miejsce do ewakuacji lub ratowania',
@@ -282,7 +264,6 @@ async function generateDocument(data) {
 
 								options.forEach((opt, index) => {
 									const checkboxVariable = `{{checkbox_evacuation_methods_${index + 1}}}`
-									console.log(`Zamieniam: ${checkboxVariable} -> ${checkboxes[index]}`)
 									requests.push({
 										replaceAllText: {
 											containsText: { text: checkboxVariable, matchCase: true },
@@ -299,7 +280,6 @@ async function generateDocument(data) {
 
 		// 🔹 Aktualizacja dokumentu jeśli znaleziono zmienne
 		if (requests.length > 0) {
-			console.log('Zamiana zmiennych:', requests)
 			await docs.documents.batchUpdate({
 				documentId: newDocId,
 				requestBody: { requests },
@@ -318,7 +298,6 @@ async function generateDocument(data) {
 
 				let match
 				while ((match = regex.exec(fullText)) !== null) {
-					console.log(`Usuwanie pozostałej zmiennej: ${match[0]}`)
 					cleanRequests.push({
 						replaceAllText: {
 							containsText: { text: match[0], matchCase: false },
@@ -338,7 +317,6 @@ async function generateDocument(data) {
 
 						let match
 						while ((match = regex.exec(cellText)) !== null) {
-							console.log(`Usuwanie pozostałej zmiennej w tabeli: ${match[0]}`)
 							cleanRequests.push({
 								replaceAllText: {
 									containsText: { text: match[0], matchCase: false },
@@ -357,7 +335,6 @@ async function generateDocument(data) {
 				documentId: newDocId,
 				requestBody: { requests: cleanRequests },
 			})
-			console.log('Nieznane zmienne usunięte (również w tabelach)!')
 		}
 
 		return `https://docs.google.com/document/d/${newDocId}`

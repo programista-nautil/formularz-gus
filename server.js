@@ -4,7 +4,12 @@ const cors = require('cors')
 const { generateDocument } = require('./controllers/generateDoc')
 const { deleteGeneratedDocuments } = require('./controllers/deleteFiles')
 const { appendToGoogleSheet } = require('./controllers/appendToGoogleSheet')
-const { transporter, handleArchitecturalForm, handleInformationalForm } = require('./controllers/sendMail')
+const {
+	transporter,
+	handleMainDataForm,
+	handleArchitecturalForm,
+	handleInformationalForm,
+} = require('./controllers/sendMail')
 
 const app = express()
 app.use(express.json())
@@ -14,7 +19,7 @@ app.use(cors())
 // Główna funkcja obsługująca formularze
 app.post('/send-form', async (req, res) => {
 	try {
-		const { formType, user_email, architectural, informational } = req.body
+		const { formType, user_email, mainData, architectural, informational } = req.body
 
 		let emailText = ''
 
@@ -26,7 +31,8 @@ app.post('/send-form', async (req, res) => {
 			// Obsługa obu formularzy
 			const archText = handleArchitecturalForm(architectural)
 			const infoText = handleInformationalForm(informational)
-			emailText = `📌 **Dostępność Architektoniczna:**\n${archText}\n\n📌 **Dostępność Informacyjno-Komunikacyjna:**\n${infoText}`
+			const mainDataText = handleMainDataForm(mainData)
+			emailText = `📌 **Dane podmiotu:**\n${mainDataText}\n\n📌 **Dostępność Architektoniczna:**\n${archText}\n\n📌 **Dostępność Informacyjno-Komunikacyjna:**\n${infoText}`
 		} else {
 			return res.status(400).send('Nieznany typ formularza lub brak danych.')
 		}
