@@ -1,7 +1,7 @@
 const { google } = require('googleapis')
 const { authorize } = require('./googleAuth')
 
-async function appendToGoogleSheet(sheetId, architecturalData, informationalData) {
+async function appendToGoogleSheet(sheetId, mainData, architecturalData, informationalData) {
 	try {
 		const auth = await authorize()
 		const sheets = google.sheets({ version: 'v4', auth })
@@ -16,6 +16,26 @@ async function appendToGoogleSheet(sheetId, architecturalData, informationalData
 			valueInputOption: 'RAW',
 			resource: { values: [[currentDate]] },
 		})
+
+		const mainDataMappings = {
+			institution_name: 'K4',
+			regon: 'K5',
+			email_secretariat: 'K6',
+			province: 'K8',
+			county: 'K9',
+			municipality: 'K10',
+		}
+
+		for (const [key, cell] of Object.entries(mainDataMappings)) {
+			let value = mainData[key] || 'Brak'
+			if (key === 'regon' && !value.trim()) value = 'Brak' // Jeśli REGON jest pusty, wpisz "Brak"
+			await sheets.spreadsheets.values.update({
+				spreadsheetId: sheetId,
+				range: `${sheetName}!${cell}`,
+				valueInputOption: 'RAW',
+				resource: { values: [[value]] },
+			})
+		}
 
 		// 🔹 **Dane architektoniczne (dokładne komórki)**
 		const architecturalMappings = {

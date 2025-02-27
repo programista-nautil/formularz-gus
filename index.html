@@ -996,6 +996,7 @@
         const archForm = document.getElementById('archForm');
         const infoForm = document.getElementById('infoForm');
         const sheetId = document.getElementById("sheetIdInput").value.trim();
+        const mainDataForm = document.getElementById('mainDataForm');
 
         if (!sheetId) {
             alert("Proszę wpisać ID arkusza przed zapisaniem.");
@@ -1004,9 +1005,16 @@
 
         const archFormData = new FormData(archForm);
         const infoFormData = new FormData(infoForm);
+        const mainDataFormData = new FormData(mainDataForm);
 
         let archData = Object.fromEntries(archFormData.entries());
         let infoData = Object.fromEntries(infoFormData.entries());
+        let mainData = Object.fromEntries(mainDataFormData.entries());
+
+        // Jeśli numer REGON jest pusty, wpisujemy "Brak"
+        if (!mainData.regon || mainData.regon.trim() === "") {
+            mainData.regon = "Brak";
+        }
 
         // Przetwarzanie checkboxów jako tablic
         function processCheckboxes(formId, data) {
@@ -1031,6 +1039,7 @@
         const combinedData = {
             sheetId,
             formType: "both",
+            mainData: mainData,
             architectural: archData,
             informational: infoData
         };
