@@ -36,6 +36,7 @@
 
         input[type="number"],
         input[type="email"],
+        input[type="text"],
         textarea {
             width: 100%;
             padding: 8px;
@@ -205,6 +206,45 @@
 <body>
 
     <div class="container">
+        <h2>Dane Główne</h2>
+        <form id="mainDataForm">
+
+            <!-- Nazwa i adres podmiotu -->
+            <label for="institution_name">Nazwa i adres podmiotu publicznego:</label>
+            <input type="text" id="institution_name" name="institution_name" required>
+
+            <!-- REGON -->
+            <label for="regon">Numer identyfikacyjny REGON (wpisać, jeśli podmiot posiada):</label>
+            <input type="text" id="regon" name="regon">
+
+            <!-- Email sekretariatu -->
+            <label for="email_secretariat">E-mail sekretariatu podmiotu:</label>
+            <input type="email" id="email_secretariat" name="email_secretariat" required>
+
+            <!-- Lokalizacja -->
+            <p>Lokalizacja siedziby podmiotu:</p>
+
+            <label for="province">Województwo:</label>
+            <input type="text" id="province" name="province" required>
+
+            <label for="county">Powiat:</label>
+            <input type="text" id="county" name="county" required>
+
+            <label for="municipality">Gmina:</label>
+            <input type="text" id="municipality" name="municipality" required>
+
+            <!-- Przycisk do wysłania formularza -->
+            <button type="button" class="showActionsButton" data-target="mainDataActionButtons" style="display: none;">
+                Zapisz dane główne
+            </button>
+            <div id="mainDataActionButtons" class="actionButtons">
+                <button id="saveMainDataButton" type="submit">Zapisz</button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="container container-gap">
         <h2>Dostępność Architektoniczna</h2>
         <form id="archForm">
 
@@ -868,12 +908,20 @@
         showLoading();
         const archForm = document.getElementById('archForm');
         const infoForm = document.getElementById('infoForm');
+        const mainDataForm = document.getElementById('mainDataForm');
 
         const archFormData = new FormData(archForm);
         const infoFormData = new FormData(infoForm);
+        const mainDataFormData = new FormData(mainDataForm);
 
         let archData = Object.fromEntries(archFormData.entries());
         let infoData = Object.fromEntries(infoFormData.entries());
+        let mainData = Object.fromEntries(mainDataFormData.entries());
+
+        // Jeśli numer REGON jest pusty, wpisujemy "Brak"
+        if (!mainData.regon || mainData.regon.trim() === "") {
+            mainData.regon = "Brak";
+        }
 
         // Przetwarzanie checkboxów jako tablic
         function processCheckboxes(formId, data) {
@@ -896,13 +944,14 @@
         processCheckboxes('infoForm', infoData);
 
         const combinedData = {
-            formType: "both", // Dodanie formType dla serwera!
+            formType: "both", // Dodanie formType dla serwera
             user_email: document.getElementById("user_email").value, // Pobranie emaila
+            mainData: mainData, // Dodanie danych głównych
             architectural: archData,
             informational: infoData
         };
 
-        console.log("Generowanie obu dokumentów:", combinedData);
+        console.log("Generowanie dokumentów:", combinedData);
 
         try {
             const response = await fetch("http://localhost:3000/generate-document", {

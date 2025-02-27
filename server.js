@@ -61,6 +61,7 @@ app.post('/generate-document', async (req, res) => {
 		if (req.body.formType === 'both') {
 			// Łączenie danych z obu formularzy w jeden obiekt
 			combinedData = {
+				...req.body.mainData,
 				...req.body.architectural,
 				...req.body.informational,
 			}

@@ -37,6 +37,21 @@ async function generateDocument(data) {
 
 		const requests = []
 
+		// 🔹 Obsługa e-maila sekretariatu (wpisanie każdej litery osobno)
+		if (data.email_secretariat) {
+			const emailUppercase = data.email_secretariat.toUpperCase().split('')
+
+			emailUppercase.forEach((char, index) => {
+				const variable = `{{e${index + 1}}}`
+				requests.push({
+					replaceAllText: {
+						containsText: { text: variable, matchCase: true },
+						replaceText: char,
+					},
+				})
+			})
+		}
+
 		// 🔹 Funkcja do obsługi checkboxów
 		function getCheckbox(value) {
 			return value === 'TAK' ? '☑' : '☐' // Uzupełniony lub pusty checkbox
