@@ -16,6 +16,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
+app.get('/', (req, res) => {
+	res.send('Serwer działa!')
+})
+
 // Główna funkcja obsługująca formularze
 app.post('/send-form', async (req, res) => {
 	try {
@@ -113,5 +117,5 @@ app.delete('/delete-generated-docs', async (req, res) => {
 	}
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3011
 app.listen(PORT, () => console.log(`Serwer działa na porcie ${PORT}`))
