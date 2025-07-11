@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const { generateDocument } = require('./controllers/generateDoc')
 const { deleteGeneratedDocuments } = require('./controllers/deleteFiles')
 const { appendToGoogleSheet } = require('./controllers/appendToGoogleSheet')
@@ -16,12 +17,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
+app.use(express.static(path.join(__dirname)))
+
 app.get('/', (req, res) => {
-	res.send('Serwer działa!')
+	res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 // Główna funkcja obsługująca formularze
-app.post('/send-form', async (req, res) => {
+app.post('/api/send-form', async (req, res) => {
 	try {
 		const { formType, user_email, mainData, architectural, informational } = req.body
 
@@ -62,7 +65,7 @@ app.post('/send-form', async (req, res) => {
 	}
 })
 
-app.post('/generate-document', async (req, res) => {
+app.post('/api/generate-document', async (req, res) => {
 	try {
 		console.log('Dane z requesta:', JSON.stringify(req.body, null, 2))
 
@@ -90,7 +93,7 @@ app.post('/generate-document', async (req, res) => {
 	}
 })
 
-app.post('/save-to-sheet', async (req, res) => {
+app.post('/api/save-to-sheet', async (req, res) => {
 	try {
 		const { sheetId, formType, mainData, architectural, informational } = req.body
 
@@ -108,7 +111,7 @@ app.post('/save-to-sheet', async (req, res) => {
 })
 
 // Endpoint do ręcznego wywołania usuwania plików curl -X DELETE http://localhost:3000/delete-generated-docs
-app.delete('/delete-generated-docs', async (req, res) => {
+app.delete('/api/delete-generated-docs', async (req, res) => {
 	try {
 		await deleteGeneratedDocuments()
 		res.json({ success: true, message: 'Wygenerowane dokumenty zostały usunięte.' })
