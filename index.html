@@ -643,7 +643,7 @@
             data.formType = formType;
             console.log("Wysyłanie formularza:", event.target.id, data);
 
-            fetch("http://localhost:3000/send-form", {
+            fetch("/api/send-form", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -797,7 +797,7 @@
 
         console.log("Generowanie dokumentu - infoForm:", data);
 
-        const response = await fetch('http://localhost:3000/generate-document', {
+        const response = await fetch('/api/generate-document', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -837,7 +837,7 @@
 
         console.log("Generowanie dokumentu - archForm:", data);
 
-        const response = await fetch('http://localhost:3000/generate-document', {
+        const response = await fetch('/api/generate-document', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -904,7 +904,7 @@
         console.log("Wysyłanie obu formularzy:", combinedData);
 
         try {
-            const response = await fetch("http://localhost:3000/send-form", {
+            const response = await fetch("/api/send-form", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(combinedData),
@@ -970,7 +970,7 @@
         console.log("Generowanie dokumentów:", combinedData);
 
         try {
-            const response = await fetch("http://localhost:3000/generate-document", {
+            const response = await fetch("/api/generate-document", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(combinedData),
@@ -1047,7 +1047,7 @@
         console.log("Zapisywanie do arkusza Google Sheets:", combinedData);
 
         try {
-            const response = await fetch("http://localhost:3000/save-to-sheet", {
+            const response = await fetch("/api/save-to-sheet", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(combinedData),
