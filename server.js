@@ -10,6 +10,7 @@ const {
 	handleMainDataForm,
 	handleArchitecturalForm,
 	handleInformationalForm,
+	sendAdminNotification,
 } = require('./controllers/sendMail')
 
 const app = express()
@@ -29,6 +30,7 @@ app.post('/api/send-form', async (req, res) => {
 		const { formType, user_email, mainData, architectural, informational } = req.body
 
 		let emailText = ''
+		let institutionName = 'Nie podano'
 
 		if (formType === 'architectural') {
 			emailText = handleArchitecturalForm(req.body)
@@ -40,6 +42,10 @@ app.post('/api/send-form', async (req, res) => {
 			const infoText = handleInformationalForm(informational)
 			const mainDataText = handleMainDataForm(mainData)
 			emailText = `📌 **Dane podmiotu:**\n${mainDataText}\n\n📌 **Dostępność Architektoniczna:**\n${archText}\n\n📌 **Dostępność Informacyjno-Komunikacyjna:**\n${infoText}`
+
+			if (mainData && mainData.institution_name) {
+				institutionName = mainData.institution_name
+			}
 		} else {
 			return res.status(400).send('Nieznany typ formularza lub brak danych.')
 		}
@@ -58,6 +64,10 @@ app.post('/api/send-form', async (req, res) => {
 		}
 
 		await transporter.sendMail(mailOptions)
+
+		const notificationDetails = `Użytkownik (e-mail: ${user_email}) wysłał formularz dla instytucji: ${institutionName}.`
+		await sendAdminNotification('Wysłano formularz', notificationDetails)
+
 		res.send('Formularz został wysłany pomyślnie!')
 	} catch (error) {
 		console.error('Błąd wysyłania maila:', error)
@@ -85,6 +95,10 @@ app.post('/api/generate-document', async (req, res) => {
 
 		// Generowanie dokumentu z połączonymi danymi
 		const docUrl = await generateDocument(combinedData)
+
+		const institutionName = combinedData.institution_name || 'Nie podano'
+		const notificationDetails = `Użytkownik wygenerował dokument dla instytucji: ${institutionName}.\nLink do dokumentu: ${docUrl}`
+		await sendAdminNotification('Wygenerowano dokument', notificationDetails)
 
 		res.json({ success: true, url: docUrl })
 	} catch (error) {

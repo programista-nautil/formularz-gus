@@ -8,6 +8,21 @@ const transporter = nodemailer.createTransport({
 	},
 })
 
+async function sendAdminNotification(action, details) {
+	try {
+		const mailOptions = {
+			from: process.env.EMAIL_USER,
+			to: 'biuro@nautil.pl',
+			subject: `[Powiadomienie Formularz GUS] - ${action}`,
+			text: `Wykryto nową aktywność w aplikacji Formularz GUS.\n\nAkcja: ${action}\n\nSzczegóły:\n${details}`,
+		}
+		await transporter.sendMail(mailOptions)
+		console.log('Powiadomienie do administratora zostało wysłane.')
+	} catch (error) {
+		console.error('Błąd podczas wysyłania powiadomienia do administratora:', error)
+	}
+}
+
 // Funkcja obsługująca formularz dostępności architektonicznej
 function handleArchitecturalForm(data) {
 	const {
@@ -206,4 +221,10 @@ function handleMainDataForm(data) {
 	return emailText
 }
 
-module.exports = { transporter, handleArchitecturalForm, handleInformationalForm, handleMainDataForm }
+module.exports = {
+	transporter,
+	handleArchitecturalForm,
+	handleInformationalForm,
+	handleMainDataForm,
+	sendAdminNotification,
+}
