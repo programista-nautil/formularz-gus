@@ -7,151 +7,301 @@
     <title>Formularz GUS - Dostępność Architektoniczna</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
             padding: 20px;
+            margin: 0;
         }
 
         .container {
-            max-width: 700px;
-            height: auto;
+            max-width: 750px;
             margin: auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6c757d, #495057, #343a40, #212529);
         }
 
         h2 {
             text-align: center;
-            color: #333;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #6c757d, #495057);
+            border-radius: 2px;
         }
 
         label,
         p {
-            font-weight: bold;
-            margin-top: 15px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 8px;
             display: block;
-            color: #333;
+            color: #2c3e50;
+            font-size: 15px;
+            line-height: 1.4;
         }
 
         input[type="number"],
         input[type="email"],
         input[type="text"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+            padding: 12px 16px;
+            margin-top: 8px;
+            margin-bottom: 5px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 15px;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #fafbfc;
+        }
+
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #6c757d;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            outline: none;
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        input[type="number"]:hover,
+        input[type="email"]:hover,
+        input[type="text"]:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #ced4da;
+            background: white;
         }
 
         input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #6c757d;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #6c757d;
         }
 
         .radio-group {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 5px;
+            gap: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .radio-group label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .radio-group label:hover {
+            background-color: #e9ecef;
         }
 
         button {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
-            padding: 10px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             display: block;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
         }
 
         button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .helper-text {
-            font-size: 14px;
-            /* Mniejsza czcionka */
-            color: #777;
-            /* Wyszarzony tekst */
-            margin-top: 5px;
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 8px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #6c757d;
+            line-height: 1.5;
         }
 
         .hidden {
             opacity: 0;
             max-height: 0;
             overflow: hidden;
-            transition: opacity 0.3s ease-out, max-height 0.3s ease-out;
+            transition: opacity 0.4s ease-out, max-height 0.4s ease-out;
         }
 
         .visible {
             opacity: 1;
-            max-height: 100px;
-            transition: opacity 0.3s ease-in, max-height 0.3s ease-in;
+            max-height: 200px;
+            transition: opacity 0.4s ease-in, max-height 0.4s ease-in;
         }
 
         .small-text {
-            font-size: 14px;
+            font-size: 13px;
             color: #6c757d;
-            margin-top: 5px;
-            transition: opacity 0.3s ease, max-height 0.3s ease;
+            margin-top: 8px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border-left: 4px solid #6c757d;
+            line-height: 1.6;
+            transition: opacity 0.4s ease, max-height 0.4s ease;
         }
 
         .toggle-button {
             font-size: 12px;
-            background-color: transparent;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
             border: none;
-            background-color: gray;
+            color: white;
             cursor: pointer;
-            width: 20%;
+            width: auto;
+            padding: 6px 12px;
+            border-radius: 20px;
             white-space: nowrap;
+            transition: all 0.3s ease;
+            text-transform: none;
+            letter-spacing: normal;
+            margin: 0;
+            box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
         }
 
         .toggle-button:hover {
-            background-color: darkgray;
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(108, 117, 125, 0.4);
         }
 
         .comment-header,
         .number-of-applications-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            /* Odstęp między tekstem a przyciskiem */
+            justify-content: space-between;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 5px;
+        }
+
+        .comment-header+p.small-text+textarea,
+        .comment-header+textarea {
+            margin-top: 0;
         }
 
         .container-gap {
-            margin-top: 25px;
+            margin-top: 30px;
         }
 
         .disabled-group {
-            opacity: 0.5;
-            /* Wyszarzenie dla etykiet i pól */
+            opacity: 0.4;
             pointer-events: none;
-            /* Wyłączenie interakcji */
+            transition: opacity 0.3s ease;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px dashed #ced4da;
+            margin-bottom: 10px;
         }
 
         .enabled-group {
             opacity: 1;
-            /* Przywrócenie normalnego wyglądu */
             pointer-events: auto;
-            /* Aktywacja interakcji */
+            transition: opacity 0.3s ease;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #6c757d;
+            box-shadow: 0 2px 4px rgba(108, 117, 125, 0.1);
+            margin-bottom: 10px;
         }
 
         .hidden-section {
             display: none;
-            /* Domyślnie ukryte */
             flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            /* Zapobiega ściskaniu poniższych elementów */
+            gap: 15px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .actionButtons {
@@ -172,6 +322,7 @@
 
         .loading-spinner {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: fixed;
@@ -179,17 +330,37 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 999;
+            backdrop-filter: blur(3px);
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            animation: pulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.6;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes spin {
@@ -201,38 +372,284 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Ulepszenia dla sekcji przycisków */
+        .main-actions-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-input-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .email-input-section label {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .email-input-section input {
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .email-input-section input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        .main-action-button {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .main-action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+        }
+
+        .main-action-button:active {
+            transform: translateY(0);
+        }
+
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-button:hover::before {
+            left: 100%;
+        }
+
+        .btn-send-mail {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-send-mail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+            background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
+        }
+
+        .btn-generate-doc {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-generate-doc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+        }
+
+        .sheet-section {
+            background: #f8f9fa;
+            border: 1px dashed #6c757d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .sheet-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .sheet-input:focus {
+            border-color: #6c757d;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            outline: none;
+        }
+
+        .sheet-input::placeholder {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .btn-save-sheet {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-save-sheet:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #495057;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+            .action-buttons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-actions-container {
+                padding: 20px 15px;
+            }
+        }
+
+        /* Lepsze style dla pozostałych przycisków */
+        .showActionsButton {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+        }
+
+        .showActionsButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        }
+
+        .actionButtons {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .actionButtons button[type="submit"],
+        .actionButtons button[id*="generate"] {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            min-width: 140px;
+        }
+
+        .actionButtons button[type="submit"]:hover,
+        .actionButtons button[id*="generate"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+            background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+        }
     </style>
 </head>
 
 <body>
 
     <div class="container">
-        <h2>Dane Główne</h2>
+        <h2>🏢 Dane Główne</h2>
         <form id="mainDataForm">
 
             <!-- Nazwa i adres podmiotu -->
-            <label for="institution_name">Nazwa i adres podmiotu publicznego:</label>
-            <input type="text" id="institution_name" name="institution_name" required>
+            <label for="institution_name">🏛️ Nazwa i adres podmiotu publicznego:</label>
+            <input type="text" id="institution_name" name="institution_name" required
+                placeholder="Wpisz pełną nazwę i adres instytucji...">
 
             <!-- REGON -->
-            <label for="regon">Numer identyfikacyjny REGON (wpisać, jeśli podmiot posiada):</label>
-            <input type="text" id="regon" name="regon">
+            <label for="regon">🔢 Numer identyfikacyjny REGON (wpisać, jeśli podmiot posiada):</label>
+            <input type="text" id="regon" name="regon" placeholder="Wpisz numer REGON lub pozostaw puste...">
 
             <!-- Email sekretariatu -->
-            <label for="email_secretariat">E-mail sekretariatu podmiotu:</label>
-            <input type="email" id="email_secretariat" name="email_secretariat" required>
+            <label for="email_secretariat">📧 E-mail sekretariatu podmiotu:</label>
+            <input type="email" id="email_secretariat" name="email_secretariat" required
+                placeholder="sekretariat@instytucja.gov.pl">
 
             <!-- Lokalizacja -->
-            <p>Lokalizacja siedziby podmiotu:</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">📍 Lokalizacja siedziby podmiotu:</p>
 
-            <label for="province">Województwo:</label>
-            <input type="text" id="province" name="province" required>
+            <label for="province">🗺️ Województwo:</label>
+            <input type="text" id="province" name="province" required placeholder="np. mazowieckie">
 
-            <label for="county">Powiat:</label>
-            <input type="text" id="county" name="county" required>
+            <label for="county">🏘️ Powiat:</label>
+            <input type="text" id="county" name="county" required placeholder="np. warszawski">
 
-            <label for="municipality">Gmina:</label>
-            <input type="text" id="municipality" name="municipality" required>
+            <label for="municipality">🏙️ Gmina:</label>
+            <input type="text" id="municipality" name="municipality" required placeholder="np. Warszawa">
 
             <!-- Przycisk do wysłania formularza -->
             <button type="button" class="showActionsButton" data-target="mainDataActionButtons" style="display: none;">
@@ -246,77 +663,93 @@
     </div>
 
     <div class="container container-gap">
-        <h2>Dostępność Architektoniczna</h2>
+        <h2>♿ Dostępność Architektoniczna</h2>
         <form id="archForm">
 
-            <label for="num_buildings">Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub obsługę
+            <label for="num_buildings">🏢 Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub
+                obsługę
                 interesantów:</label>
-            <input type="number" id="num_buildings" name="num_buildings" required>
+            <input type="number" id="num_buildings" name="num_buildings" required
+                placeholder="Wpisz liczbę budynków...">
 
-            <p>1. Wolne od barier przestrzenie komunikacyjne w budynkach:</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🚪 1. Wolne od barier przestrzenie
+                komunikacyjne w budynkach:</p>
             <label for="barrier_free_all">a. Liczba budynków, w których podmiot zapewnia wolne od barier wszystkie
                 przestrzenie komunikacyjne:</label>
-            <input type="number" id="barrier_free_all" name="barrier_free_all">
+            <input type="number" id="barrier_free_all" name="barrier_free_all" placeholder="0">
 
             <label for="barrier_free_partial">b. Liczba budynków, w których podmiot częściowo zapewnia wolne od barier
                 przestrzenie komunikacyjne:</label>
-            <input type="number" id="barrier_free_partial" name="barrier_free_partial">
+            <input type="number" id="barrier_free_partial" name="barrier_free_partial" placeholder="0">
 
             <label for="barrier_free_none">c. Liczba budynków, w których podmiot nie zapewnia wolnych od barier
                 przestrzeni komunikacyjnych:</label>
-            <input type="number" id="barrier_free_none" name="barrier_free_none">
+            <input type="number" id="barrier_free_none" name="barrier_free_none" placeholder="0">
 
-            <p>2. Dostęp do wszystkich pomieszczeń w budynkach (z wyłączeniem pomieszczeń technicznych):</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🚶 2. Dostęp do wszystkich pomieszczeń w
+                budynkach (z wyłączeniem pomieszczeń technicznych):</p>
             <label for="room_access_all">a. Liczba budynków, w których podmiot umożliwia dostęp do wszystkich
                 pomieszczeń:</label>
-            <input type="number" id="room_access_all" name="room_access_all">
+            <input type="number" id="room_access_all" name="room_access_all" placeholder="0">
 
             <label for="room_access_none">b. Liczba budynków, w których podmiot nie umożliwia dostępu do wszystkich
                 pomieszczeń:</label>
-            <input type="number" id="room_access_none" name="room_access_none">
+            <input type="number" id="room_access_none" name="room_access_none" placeholder="0">
 
-            <p>c. Rodzaje rozwiązań, które podmiot zastosował, aby umożliwić dostęp do wszystkich pomieszczeń:</p>
-            <label><input type="checkbox" name="room_access_solutions" value="Rozwiązania architektoniczne"> Rozwiązania
-                architektoniczne</label>
-            <label><input type="checkbox" name="room_access_solutions" value="Środki techniczne"> Środki
-                techniczne</label>
-            <label><input type="checkbox" name="room_access_solutions" value="Zainstalowane urządzenia"> Zainstalowane
-                urządzenia</label>
+            <p style="margin-top: 20px; margin-bottom: 15px; color: #495057;">c. Rodzaje rozwiązań, które podmiot
+                zastosował, aby umożliwić dostęp do wszystkich pomieszczeń:</p>
+            <div class="radio-group" style="flex-direction: column; align-items: flex-start;">
+                <label><input type="checkbox" name="room_access_solutions" value="Rozwiązania architektoniczne"> 🏗️
+                    Rozwiązania
+                    architektoniczne</label>
+                <label><input type="checkbox" name="room_access_solutions" value="Środki techniczne"> ⚙️ Środki
+                    techniczne</label>
+                <label><input type="checkbox" name="room_access_solutions" value="Zainstalowane urządzenia"> 🔧
+                    Zainstalowane
+                    urządzenia</label>
+            </div>
 
-            <p>3. Informacja na temat rozkładu pomieszczeń w budynkach:</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">ℹ️ 3. Informacja na temat rozkładu pomieszczeń
+                w budynkach:</p>
             <label for="layout_info_visual_tactile">a. Liczba budynków, w których podmiot zapewnia informację co
                 najmniej w sposób wizualny i dotykowy:</label>
-            <input type="number" id="layout_info_visual_tactile" name="layout_info_visual_tactile">
+            <input type="number" id="layout_info_visual_tactile" name="layout_info_visual_tactile" placeholder="0">
 
             <label for="layout_info_visual_voice">b. Liczba budynków, w których podmiot zapewnia informację co najmniej
                 w sposób wizualny i głosowy:</label>
-            <input type="number" id="layout_info_visual_voice" name="layout_info_visual_voice">
+            <input type="number" id="layout_info_visual_voice" name="layout_info_visual_voice" placeholder="0">
 
             <label for="layout_info_all">c. Liczba budynków, w których podmiot zapewnia informację co najmniej w sposób
                 wizualny, dotykowy i głosowy:</label>
-            <input type="number" id="layout_info_all" name="layout_info_all">
+            <input type="number" id="layout_info_all" name="layout_info_all" placeholder="0">
 
-            <p>4. Dostęp do budynków dla osób korzystających z psa asystującego:</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🐕 4. Dostęp do budynków dla osób
+                korzystających z psa asystującego:</p>
             <label for="dog_access_yes">a. Liczba budynków, do których podmiot zapewnia wstęp osobie korzystającej z psa
                 asystującego:</label>
-            <input type="number" id="dog_access_yes" name="dog_access_yes">
+            <input type="number" id="dog_access_yes" name="dog_access_yes" placeholder="0">
 
             <label for="dog_access_no">b. Liczba budynków, do których podmiot nie zapewnia wstępu osobie korzystającej z
                 psa asystującego:</label>
-            <input type="number" id="dog_access_no" name="dog_access_no">
+            <input type="number" id="dog_access_no" name="dog_access_no" placeholder="0">
 
-            <p>5. Ewakuacja lub ratowanie osób wewnątrz budynków:</p>
-            <p>a. Aby umożliwić ewakuację lub ratowanie osób wewnątrz budynków, podmiot zapewnia:</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🚨 5. Ewakuacja lub ratowanie osób wewnątrz
+                budynków:</p>
+            <p style="margin-bottom: 15px; color: #495057;">a. Aby umożliwić ewakuację lub ratowanie osób wewnątrz
+                budynków, podmiot zapewnia:</p>
 
-            <label><input type="checkbox" name="evacuation_methods" value="Procedury ewakuacji lub ratowania"
-                    onclick="updateEvacuationOptions()"> Procedury ewakuacji lub ratowania</label>
-            <label><input type="checkbox" name="evacuation_methods"
-                    value="Sprzęt lub miejsce do ewakuacji lub ratowania" onclick="updateEvacuationOptions()"> Sprzęt
-                lub miejsce do ewakuacji lub ratowania</label>
-            <label><input type="checkbox" name="evacuation_methods"
-                    value="Pracowników przeszkolonych z procedur ewakuacji lub ratowania"
-                    onclick="updateEvacuationOptions()"> Pracowników przeszkolonych z procedur ewakuacji lub
-                ratowania</label>
+            <div class="radio-group" style="flex-direction: column; align-items: flex-start;">
+                <label><input type="checkbox" name="evacuation_methods" value="Procedury ewakuacji lub ratowania"
+                        onclick="updateEvacuationOptions()"> 📋 Procedury ewakuacji lub ratowania</label>
+                <label><input type="checkbox" name="evacuation_methods"
+                        value="Sprzęt lub miejsce do ewakuacji lub ratowania" onclick="updateEvacuationOptions()"> 🛠️
+                    Sprzęt
+                    lub miejsce do ewakuacji lub ratowania</label>
+                <label><input type="checkbox" name="evacuation_methods"
+                        value="Pracowników przeszkolonych z procedur ewakuacji lub ratowania"
+                        onclick="updateEvacuationOptions()"> 👨‍🏫 Pracowników przeszkolonych z procedur ewakuacji lub
+                    ratowania</label>
+            </div>
 
             <div class="disabled-group">
                 <label for="evacuation_full">b. Liczba budynków, w których podmiot zapewnia pełną ewakuację dla osób ze
@@ -340,87 +773,89 @@
             </div>
 
             <div class="comment-header">
-                <label for="comments">Komentarze i uwagi dotyczące dostępności architektonicznej:</label>
+                <label for="comments">💬 Komentarze i uwagi dotyczące dostępności architektonicznej:</label>
                 <button type="button" class="toggle-button" id="comments-helperButton"
                     onclick="toggleHelperText('comments-helperText', 'comments-helperButton')">Pokaż więcej</button>
             </div>
             <p id="comments-helperText" class="small-text hidden">
-                Proszę zamieścić tu słowny opis dostępności architektonicznej, wykraczający poza informacje ujęte
+                📝 Proszę zamieścić tu słowny opis dostępności architektonicznej, wykraczający poza informacje ujęte
                 powyżej – opis ten będzie stanowić część raportu, który są Państwo zobowiązani opublikować na swojej
                 stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
                 Informacji Publicznej – na swojej stronie internetowej.
             </p>
-            <textarea id="comments" name="arch_comments" rows="4"></textarea>
-
-            <!-- <label for="user_email">Podaj adres e-mail, na który ma zostać wysłana wiadomość:</label>
-            <input type="email" id="user_email" name="user_email" required> -->
+            <textarea id="comments" name="arch_comments" rows="4"
+                placeholder="Wpisz dodatkowe uwagi dotyczące dostępności architektonicznej..."></textarea>
 
             <!-- Formularz Architektoniczny -->
-            <button type="button" class="showActionsButton" data-target="archActionButtons"
-                style="display: none;">Wyślij tylko dostępność
+            <button type="button" class="showActionsButton" data-target="archActionButtons" style="display: none;">📊
+                Wyślij tylko dostępność
                 architektoniczną</button>
             <div id="archActionButtons" class="actionButtons">
-                <button type="submit">Wyślij mail</button>
-                <button id="generateArchDocButton" type="button">Wygeneruj dokument</button>
+                <button type="submit">📧 Wyślij mail</button>
+                <button id="generateArchDocButton" type="button">📄 Wygeneruj dokument</button>
             </div>
         </form>
     </div>
 
     <div class="container container-gap">
-        <h2>Dostępność informacyjno-komunikacyjna</h2>
+        <h2>💬 Dostępność informacyjno-komunikacyjna</h2>
         <form id="infoForm">
 
-            <p>1. Czy podmiot zapewnia osobom ze szczególnymi potrzebami obsługę z wykorzystaniem niżej wymienionych
+            <p style="margin-top: 20px; font-size: 16px; color: #495057;">📞 1. Czy podmiot zapewnia osobom ze
+                szczególnymi potrzebami obsługę z wykorzystaniem niżej wymienionych
                 sposobów/środków wspierających komunikowanie się?</p>
 
-            <p>a. Zastosowanie formularza kontaktowego</p>
+            <p style="margin-top: 20px; margin-bottom: 8px; color: #495057;">a. Zastosowanie formularza kontaktowego</p>
             <div class="radio-group">
-                <input type="radio" name="contact_form" value="TAK" required> TAK
-                <input type="radio" name="contact_form" value="NIE"> NIE
+                <label><input type="radio" name="contact_form" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_form" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>b. Kontakt za pomocą poczty elektronicznej</p>
+            <p style="margin-bottom: 8px; color: #495057;">b. Kontakt za pomocą poczty elektronicznej</p>
             <div class="radio-group">
-                <input type="radio" name="contact_mail" value="TAK" required> TAK
-                <input type="radio" name="contact_mail" value="NIE"> NIE
+                <label><input type="radio" name="contact_mail" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_mail" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>c. Przesyłanie wiadomości tekstowych, w tym z wykorzystaniem wiadomości SMS,
+            <p style="margin-bottom: 8px; color: #495057;">c. Przesyłanie wiadomości tekstowych, w tym z wykorzystaniem
+                wiadomości SMS,
                 MMS lub komunikatorów internetowych
             </p>
             <div class="radio-group">
-                <input type="radio" name="contact_sms" value="TAK" required> TAK
-                <input type="radio" name="contact_sms" value="NIE"> NIE
+                <label><input type="radio" name="contact_sms" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_sms" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>d. Komunikacja audiowizualna, w tym z wykorzystaniem komunikatorów
+            <p style="margin-bottom: 8px; color: #495057;">d. Komunikacja audiowizualna, w tym z wykorzystaniem
+                komunikatorów
                 internetowych
             </p>
             <div class="radio-group">
-                <input type="radio" name="contact_av" value="TAK" required> TAK
-                <input type="radio" name="contact_av" value="NIE"> NIE
+                <label><input type="radio" name="contact_av" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_av" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>e. Przesyłanie faksów</p>
+            <p style="margin-bottom: 8px; color: #495057;">e. Przesyłanie faksów</p>
             <div class="radio-group">
-                <input type="radio" name="contact_fax" value="TAK" required> TAK
-                <input type="radio" name="contact_fax" value="NIE"> NIE
+                <label><input type="radio" name="contact_fax" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_fax" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>f. Wykorzystanie tłumacza języka migowego przez strony internetowe i/lub aplikacje
+            <p style="margin-bottom: 8px; color: #495057;">f. Wykorzystanie tłumacza języka migowego przez strony
+                internetowe i/lub aplikacje
                 (tłumaczenie online)
             </p>
             <div class="radio-group">
-                <input type="radio" name="contact_sign_online" value="TAK" required> TAK
-                <input type="radio" name="contact_sign_online" value="NIE"> NIE
+                <label><input type="radio" name="contact_sign_online" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_sign_online" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>g. Pomoc tłumacza języka migowego – kontakt osobisty</p>
+            <p style="margin-bottom: 8px; color: #495057;">g. Pomoc tłumacza języka migowego – kontakt osobisty</p>
             <div class="radio-group">
-                <input type="radio" name="contact_sign_personal" value="TAK" required
-                    onclick="toggleInput('sign_lang_wrapper', 'sign_lang_time', true)"> TAK
-                <input type="radio" name="contact_sign_personal" value="NIE"
-                    onclick="toggleInput('sign_lang_wrapper', 'sign_lang_time', false)"> NIE
+                <label><input type="radio" name="contact_sign_personal" value="TAK" required
+                        onclick="toggleInput('sign_lang_wrapper', 'sign_lang_time', true)"> ✅ TAK</label>
+                <label><input type="radio" name="contact_sign_personal" value="NIE"
+                        onclick="toggleInput('sign_lang_wrapper', 'sign_lang_time', false)"> ❌ NIE</label>
             </div>
 
             <div id="sign_lang_wrapper" class="hidden">
@@ -429,124 +864,139 @@
                     podmiot zapewnia kontakt osobisty z tłumaczem języka migowego:
                 </label>
                 <select id="sign_lang_time" name="sign_lang_time">
-                    <option value="od razu">od razu</option>
-                    <option value="1 dzień">w ciągu 1 dnia roboczego</option>
-                    <option value="2-3 dni">w ciągu 2-3 dni roboczych</option>
-                    <option value="powyżej 3 dni">powyżej 3 dni roboczych</option>
+                    <option value="od razu">⚡ od razu</option>
+                    <option value="1 dzień">📅 w ciągu 1 dnia roboczego</option>
+                    <option value="2-3 dni">📆 w ciągu 2-3 dni roboczych</option>
+                    <option value="powyżej 3 dni">⏳ powyżej 3 dni roboczych</option>
                 </select>
             </div>
 
-            <p>h. Kontakt z pomocą tłumacza-przewodnika (kontakt osobisty)</p>
+            <p style="margin-bottom: 8px; color: #495057;">h. Kontakt z pomocą tłumacza-przewodnika (kontakt osobisty)
+            </p>
             <div class="radio-group">
-                <input type="radio" name="contact_guide" value="TAK" required> TAK
-                <input type="radio" name="contact_guide" value="NIE"> NIE
+                <label><input type="radio" name="contact_guide" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="contact_guide" value="NIE"> ❌ NIE</label>
             </div>
-            <p>2. Czy podmiot posiada urządzenia lub środki techniczne do obsługi osób słabosłyszących?</p>
 
-            <p>a. Pętle indukcyjne</p>
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🔊 2. Czy podmiot posiada urządzenia lub
+                środki techniczne do obsługi osób słabosłyszących?</p>
+
+            <p style="margin-bottom: 8px; color: #495057;">a. Pętle indukcyjne</p>
             <div class="radio-group">
-                <input type="radio" name="hearing_loop" value="TAK"
-                    onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', true)"> TAK
-                <input type="radio" name="hearing_loop" value="NIE"
-                    onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', false)"> NIE
+                <label><input type="radio" name="hearing_loop" value="TAK"
+                        onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', true)"> ✅ TAK</label>
+                <label><input type="radio" name="hearing_loop" value="NIE"
+                        onclick="toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', false)"> ❌ NIE</label>
             </div>
             <div id="hearing_loop_count_wrapper" class="hidden">
-                <label for="hearing_loop_count">Liczba urządzeń:</label>
-                <input type="number" id="hearing_loop_count" name="hearing_loop_count" disabled>
+                <label for="hearing_loop_count">🔢 Liczba urządzeń:</label>
+                <input type="number" id="hearing_loop_count" name="hearing_loop_count" disabled
+                    placeholder="Wpisz liczbę...">
             </div>
 
-            <p>b. Systemy FM</p>
+            <p style="margin-bottom: 8px; color: #495057;">b. Systemy FM</p>
             <div class="radio-group">
-                <input type="radio" name="fm_systems" value="TAK"
-                    onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', true)"> TAK
-                <input type="radio" name="fm_systems" value="NIE"
-                    onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', false)"> NIE
+                <label><input type="radio" name="fm_systems" value="TAK"
+                        onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', true)"> ✅ TAK</label>
+                <label><input type="radio" name="fm_systems" value="NIE"
+                        onclick="toggleInput('fm_systems_count_wrapper', 'fm_systems_count', false)"> ❌ NIE</label>
             </div>
             <div id="fm_systems_count_wrapper" class="hidden">
-                <label for="fm_systems_count">Liczba urządzeń:</label>
-                <input type="number" id="fm_systems_count" name="fm_systems_count" disabled>
+                <label for="fm_systems_count">🔢 Liczba urządzeń:</label>
+                <input type="number" id="fm_systems_count" name="fm_systems_count" disabled
+                    placeholder="Wpisz liczbę...">
             </div>
 
-            <p>c. Systemy na podczerwień (IR)</p>
+            <p style="margin-bottom: 8px; color: #495057;">c. Systemy na podczerwień (IR)</p>
             <div class="radio-group">
-                <input type="radio" name="ir_systems" value="TAK"
-                    onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', true)"> TAK
-                <input type="radio" name="ir_systems" value="NIE"
-                    onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', false)"> NIE
+                <label><input type="radio" name="ir_systems" value="TAK"
+                        onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', true)"> ✅ TAK</label>
+                <label><input type="radio" name="ir_systems" value="NIE"
+                        onclick="toggleInput('ir_systems_count_wrapper', 'ir_systems_count', false)"> ❌ NIE</label>
             </div>
             <div id="ir_systems_count_wrapper" class="hidden">
-                <label for="ir_systems_count">Liczba urządzeń:</label>
-                <input type="number" id="ir_systems_count" name="ir_systems_count" disabled>
+                <label for="ir_systems_count">🔢 Liczba urządzeń:</label>
+                <input type="number" id="ir_systems_count" name="ir_systems_count" disabled
+                    placeholder="Wpisz liczbę...">
             </div>
 
-            <p>d. Systemy Bluetooth</p>
+            <p style="margin-bottom: 8px; color: #495057;">d. Systemy Bluetooth</p>
             <div class="radio-group">
-                <input type="radio" name="bluetooth_systems" value="TAK"
-                    onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', true)"> TAK
-                <input type="radio" name="bluetooth_systems" value="NIE"
-                    onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', false)"> NIE
+                <label><input type="radio" name="bluetooth_systems" value="TAK"
+                        onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', true)"> ✅
+                    TAK</label>
+                <label><input type="radio" name="bluetooth_systems" value="NIE"
+                        onclick="toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', false)"> ❌
+                    NIE</label>
             </div>
             <div id="bluetooth_systems_count_wrapper" class="hidden">
-                <label for="bluetooth_systems_count">Liczba urządzeń:</label>
-                <input type="number" id="bluetooth_systems_count" name="bluetooth_systems_count" disabled>
+                <label for="bluetooth_systems_count">🔢 Liczba urządzeń:</label>
+                <input type="number" id="bluetooth_systems_count" name="bluetooth_systems_count" disabled
+                    placeholder="Wpisz liczbę...">
             </div>
 
-            <p>e. Inne urządzenia lub środki techniczne</p>
+            <p style="margin-bottom: 8px; color: #495057;">e. Inne urządzenia lub środki techniczne</p>
             <div class="radio-group">
-                <input type="radio" name="other_devices" value="TAK"
-                    onclick="toggleInputGroup(true, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
-                TAK
-                <input type="radio" name="other_devices" value="NIE"
-                    onclick="toggleInputGroup(false, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
-                NIE
+                <label><input type="radio" name="other_devices" value="TAK"
+                        onclick="toggleInputGroup(true, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
+                    ✅ TAK</label>
+                <label><input type="radio" name="other_devices" value="NIE"
+                        onclick="toggleInputGroup(false, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count'])">
+                    ❌ NIE</label>
             </div>
 
             <div id="other_devices_wrapper" class="hidden-section">
-                <label for="other_devices_description">Prosimy o opis słowny posiadanych urządzeń lub środków
+                <label for="other_devices_description">📝 Prosimy o opis słowny posiadanych urządzeń lub środków
                     technicznych</label>
-                <textarea id="other_devices_description" name="other_devices_description" rows="3" disabled></textarea>
+                <textarea id="other_devices_description" name="other_devices_description" rows="3" disabled
+                    placeholder="Opisz jakie urządzenia lub środki techniczne posiada podmiot..."></textarea>
 
-                <label for="other_devices_count">Liczba urządzeń:</label>
-                <input type="number" id="other_devices_count" name="other_devices_count" disabled>
+                <label for="other_devices_count">🔢 Liczba urządzeń:</label>
+                <input type="number" id="other_devices_count" name="other_devices_count" disabled
+                    placeholder="Wpisz liczbę...">
             </div>
 
-            <p>3. Czy podmiot zapewnia na swojej głównej stronie internetowej informację o zakresie swojej działalności
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">🌐 3. Czy podmiot zapewnia na swojej głównej
+                stronie internetowej informację o zakresie swojej działalności
                 (głównych zadaniach podmiotu) w postaci</p>
 
-            <p>a. Tekstu odczytywalnego maszynowo?</p>
+            <p style="margin-bottom: 8px; color: #495057;">a. Tekstu odczytywalnego maszynowo?</p>
             <div class="radio-group">
-                <input type="radio" name="machine_readable_text" value="TAK" required> TAK
-                <input type="radio" name="machine_readable_text" value="NIE"> NIE
+                <label><input type="radio" name="machine_readable_text" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="machine_readable_text" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>b. Nagrania treści w polskim języku migowym (PJM) w postaci pliku wideo?</p>
+            <p style="margin-bottom: 8px; color: #495057;">b. Nagrania treści w polskim języku migowym (PJM) w postaci
+                pliku wideo?</p>
             <div class="radio-group">
-                <input type="radio" name="pjm_video" value="TAK" required> TAK
-                <input type="radio" name="pjm_video" value="NIE"> NIE
+                <label><input type="radio" name="pjm_video" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="pjm_video" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>c. Informacji w tekście łatwym do czytania (ETR)?</p>
+            <p style="margin-bottom: 8px; color: #495057;">c. Informacji w tekście łatwym do czytania (ETR)?</p>
             <div class="radio-group">
-                <input type="radio" name="easy_read_text" value="TAK" required> TAK
-                <input type="radio" name="easy_read_text" value="NIE"> NIE
+                <label><input type="radio" name="easy_read_text" value="TAK" required> ✅ TAK</label>
+                <label><input type="radio" name="easy_read_text" value="NIE"> ❌ NIE</label>
             </div>
 
-            <p>4. Czy w okresie sprawozdawczym podmiot otrzymał od osób ze
+            <p style="margin-top: 25px; font-size: 16px; color: #495057;">📝 4. Czy w okresie sprawozdawczym podmiot
+                otrzymał od osób ze
                 szczególnymi potrzebami wniosek o zapewnienie szczególnej formy komunikacji?
-                <span style="font-size: 12px;">(na podstawie art. 6 pkt 3 lit.d UzD)</span>
+                <span style="font-size: 12px; color: #6c757d;">(na podstawie art. 6 pkt 3 lit.d UzD)</span>
             </p>
             <div class="radio-group">
-                <input type="radio" name="communication_request" value="TAK"
-                    onclick="toggleInputGroup(true, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
-                TAK
-                <input type="radio" name="communication_request" value="NIE"
-                    onclick="toggleInputGroup(false, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
-                NIE
+                <label><input type="radio" name="communication_request" value="TAK"
+                        onclick="toggleInputGroup(true, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
+                    ✅ TAK</label>
+                <label><input type="radio" name="communication_request" value="NIE"
+                        onclick="toggleInputGroup(false, 'communication_details_wrapper', ['communication_count', 'communication_details'])">
+                    ❌ NIE</label>
             </div>
 
             <div id="communication_details_wrapper" class="hidden-section">
-                <label for="communication_count">Liczba wniosków – ogółem:</label>
-                <input type="number" id="communication_count" name="communication_count" disabled>
+                <label for="communication_count">🔢 Liczba wniosków – ogółem:</label>
+                <input type="number" id="communication_count" name="communication_count" disabled
+                    placeholder="Wpisz liczbę wniosków...">
 
                 <label for="communication_details">
                     Nazwy użytych form komunikacji określonych we wnioskach ze wskazaniem liczby użyć każdej z tych form
@@ -556,54 +1006,66 @@
             </div>
 
 
-            <p>Komentarze i uwagi dotyczące dostępności informacyjno-komunikacyjnej <span
-                    style="font-size: 12px;">(proszę zamieścić tu słowny opis dostępności informacyjno-komunikacyjnej,
-                    wykraczający poza informacje ujęte powyżej – opis ten będzie stanowić część raportu, który są
-                    Państwo zobowiązani opublikować na swojej stronie podmiotowej Biuletynu Informacji Publicznej, a w
-                    przypadku braku strony podmiotowej Biuletynu Informacji Publicznej – na swojej stronie
-                    internetowej)</span>:</p>
-            <textarea id="comments" name="comments" rows="4"></textarea>
+            <div class="comment-header">
+                <label for="comments">💬 Komentarze i uwagi dotyczące dostępności informacyjno-komunikacyjnej:</label>
+                <button type="button" class="toggle-button" id="info-comments-helperButton"
+                    onclick="toggleHelperText('info-comments-helperText', 'info-comments-helperButton')">Pokaż
+                    więcej</button>
+            </div>
+            <p id="info-comments-helperText" class="small-text hidden">
+                📝 Proszę zamieścić tu słowny opis dostępności informacyjno-komunikacyjnej, wykraczający poza informacje
+                ujęte
+                powyżej – opis ten będzie stanowić część raportu, który są Państwo zobowiązani opublikować na swojej
+                stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
+                Informacji Publicznej – na swojej stronie internetowej.
+            </p>
+            <textarea id="comments" name="comments" rows="4"
+                placeholder="Wpisz dodatkowe uwagi dotyczące dostępności informacyjno-komunikacyjnej..."></textarea>
 
             <!-- <label for="user_email">Podaj adres e-mail:</label>
             <input type="email" id="user_email" name="user_email" required> -->
 
-            <button type="button" class="showActionsButton" data-target="infoActionButtons"
-                style="display: none;">Wyślij tylko dostępność
+            <button type="button" class="showActionsButton" data-target="infoActionButtons" style="display: none;">📊
+                Wyślij tylko dostępność
                 informacyjno-komunikacyjną</button>
             <div id="infoActionButtons" class="actionButtons">
-                <button type="submit">Wyślij mail</button>
-                <button id="generateInfoDocButton" type="button">Wygeneruj dokument</button>
+                <button type="submit">📧 Wyślij mail</button>
+                <button id="generateInfoDocButton" type="button">📄 Wygeneruj dokument</button>
             </div>
 
         </form>
     </div>
 
-    <div class="container container-gap">
-        <label for="user_email">Podaj adres e-mail:</label>
-        <input type="email" id="user_email" name="user_email" required>
-    </div>
+    <div class="container container-gap main-actions-container">
+        <div class="section-title">📧 Kontakt i Działania</div>
 
-    <div class="container container-gap">
-        <button type="button" class="showActionsButton" data-target="bothActionButtons">
-            Wyślij
+        <div class="email-input-section">
+            <label for="user_email">✉️ Podaj adres e-mail:</label>
+            <input type="email" id="user_email" name="user_email" required placeholder="twoj@email.com">
+        </div>
+
+        <button type="button" class="main-action-button showActionsButton" data-target="bothActionButtons">
+            🚀 Wybierz Działanie
         </button>
-        <div id="bothActionButtons" class="actionButtons"
-            style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <button id="sendBothFormsButton" type="button"
-                style="width: 100%; padding: 10px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #FFC107; color: white; border: none; border-radius: 5px;">Wyślij
-                mail</button>
-            <button id="generateBothDocsButton" type="button"
-                style="width: 100%; padding: 10px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #007BFF; color: white; border: none; border-radius: 5px;">Wygeneruj
-                dokument</button>
 
-            <!-- Nowe pole do wpisania ID arkusza -->
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%;">
-                <input type="text" id="sheetIdInput" placeholder="Wpisz ID arkusza Google"
-                    style="width: calc(100% - 20px); padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px;">
+        <div id="bothActionButtons" class="actionButtons">
+            <div class="action-buttons-grid">
+                <button id="sendBothFormsButton" type="button" class="action-button btn-send-mail">
+                    📧 Wyślij Mail
+                </button>
+                <button id="generateBothDocsButton" type="button" class="action-button btn-generate-doc">
+                    📄 Wygeneruj Dokument
+                </button>
+            </div>
 
-                <button id="saveToSheetButton" type="button"
-                    style="width: 100%;  font-size: 16px; font-weight: bold; cursor: pointer; background-color: #28A745; color: black; border: none; border-radius: 5px;">
-                    Zapisz do arkusza
+            <div class="sheet-section">
+                <div style="text-align: center; margin-bottom: 15px; color: #6c757d; font-weight: 600;">
+                    📊 Zapis do Arkusza Google
+                </div>
+                <input type="text" id="sheetIdInput" placeholder="🔗 Wklej ID arkusza Google Sheets..."
+                    class="sheet-input">
+                <button id="saveToSheetButton" type="button" class="btn-save-sheet">
+                    💾 Zapisz do Arkusza
                 </button>
             </div>
         </div>
@@ -611,6 +1073,7 @@
         <!-- Spinner ładowania -->
         <div id="loadingSpinner" class="loading-spinner" style="display: none;">
             <div class="spinner"></div>
+            <div class="loading-text">Przetwarzanie danych...</div>
         </div>
     </div>
 
@@ -1064,13 +1527,29 @@
     });
 
     function showLoading() {
-        document.getElementById("bothActionButtons").style.display = "none"; // Ukrywa przyciski
-        document.getElementById("loadingSpinner").style.display = "flex"; // Pokazuje spinner
+        const actionButtons = document.getElementById("bothActionButtons");
+        const spinner = document.getElementById("loadingSpinner");
+        const mainButton = document.querySelector(".main-action-button");
+
+        if (actionButtons) actionButtons.style.opacity = "0.5";
+        if (mainButton) mainButton.style.opacity = "0.5";
+        if (spinner) spinner.style.display = "flex";
+
+        // Wyłącz wszystkie przyciski podczas ładowania
+        document.querySelectorAll('button').forEach(btn => btn.disabled = true);
     }
 
     function hideLoading() {
-        document.getElementById("loadingSpinner").style.display = "none"; // Ukrywa spinner
-        document.getElementById("bothActionButtons").style.display = "flex"; // Pokazuje przyciski
+        const actionButtons = document.getElementById("bothActionButtons");
+        const spinner = document.getElementById("loadingSpinner");
+        const mainButton = document.querySelector(".main-action-button");
+
+        if (spinner) spinner.style.display = "none";
+        if (actionButtons) actionButtons.style.opacity = "1";
+        if (mainButton) mainButton.style.opacity = "1";
+
+        // Przywróć wszystkie przyciski po zakończeniu ładowania
+        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
     }
 
 
