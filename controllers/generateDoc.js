@@ -10,11 +10,30 @@ async function generateDocument(data) {
 		const drive = google.drive({ version: 'v3', auth })
 		const docs = google.docs({ version: 'v1', auth })
 
+		// Tworzenie profesjonalnej nazwy dokumentu
+		const currentDate = new Date()
+		const dateString = currentDate
+			.toLocaleDateString('pl-PL', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+			})
+			.replace(/\./g, '-')
+
+		const institutionName = data.institution_name || 'Nieznana_Instytucja'
+		// Oczyszczenie nazwy instytucji z niedozwolonych znaków
+		const cleanInstitutionName = institutionName
+			.replace(/[^\w\s-]/g, '') // Usuń znaki specjalne
+			.replace(/\s+/g, '_') // Zastąp spacje podkreślnikami
+			.substring(0, 50) // Ogranicz długość
+
+		const documentName = `Formularz_GUS_${cleanInstitutionName}_${dateString}`
+
 		// Tworzenie kopii szablonu w określonym folderze
 		const copy = await drive.files.copy({
 			fileId: TEMPLATE_DOC_ID,
 			requestBody: {
-				name: `Dokument ${new Date().toISOString()}`,
+				name: documentName,
 				parents: [process.env.FOLDER_ID],
 			},
 		})
@@ -337,7 +356,11 @@ async function generateDocument(data) {
 			})
 		}
 
-		return `https://docs.google.com/document/d/${newDocId}`
+		return {
+			url: `https://docs.google.com/document/d/${newDocId}`,
+			fileName: documentName,
+			fileId: newDocId,
+		}
 	} catch (error) {
 		console.error('Błąd generowania dokumentu:', error)
 		throw error

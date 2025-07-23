@@ -94,13 +94,22 @@ app.post('/api/generate-document', async (req, res) => {
 		}
 
 		// Generowanie dokumentu z połączonymi danymi
-		const docUrl = await generateDocument(combinedData)
+		const docResult = await generateDocument(combinedData)
+
+		// Obsługa zarówno starego formatu (string) jak i nowego (object)
+		const docUrl = typeof docResult === 'string' ? docResult : docResult.url
+		const fileName = typeof docResult === 'object' ? docResult.fileName : 'Dokument_GUS'
 
 		const institutionName = combinedData.institution_name || 'Nie podano'
 		const notificationDetails = `Użytkownik wygenerował dokument dla instytucji: ${institutionName}.\nLink do dokumentu: ${docUrl}`
 		await sendAdminNotification('Wygenerowano dokument', notificationDetails)
 
-		res.json({ success: true, url: docUrl })
+		res.json({
+			success: true,
+			url: docUrl,
+			fileName: fileName,
+			fileId: typeof docResult === 'object' ? docResult.fileId : null,
+		})
 	} catch (error) {
 		console.error('Błąd generowania dokumentu:', error)
 		res.status(500).json({ success: false, error: error.message })
