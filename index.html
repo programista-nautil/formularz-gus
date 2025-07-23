@@ -330,47 +330,220 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 999;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
             backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #007bff;
+            width: 80px;
+            height: 80px;
+            border: 4px solid #f1f5f9;
+            border-top: 4px solid #3b82f6;
+            border-right: 4px solid #8b5cf6;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            animation: modernSpin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .spinner::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .loading-text {
-            color: white;
+            color: #334155;
             font-size: 18px;
             font-weight: 600;
             text-align: center;
-            animation: pulse 1.5s ease-in-out infinite alternate;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes pulse {
-            from {
-                opacity: 0.6;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .loading-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
         }
 
-        @keyframes spin {
+        @keyframes modernSpin {
             0% {
                 transform: rotate(0deg);
+                filter: hue-rotate(0deg);
             }
 
             100% {
                 transform: rotate(360deg);
+                filter: hue-rotate(360deg);
             }
+        }
+
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 500px;
+            min-width: 380px;
+        }
+
+        @media (max-width: 480px) {
+            .notification-container {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                min-width: auto;
+            }
+        }
+
+        .notification {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+        }
+
+        .notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.success {
+            border-left-color: #10b981;
+        }
+
+        .notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .notification.info {
+            border-left-color: #3b82f6;
+        }
+
+        .notification.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .notification-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+
+        .notification.success .notification-icon {
+            color: #10b981;
+        }
+
+        .notification.error .notification-icon {
+            color: #ef4444;
+        }
+
+        .notification.info .notification-icon {
+            color: #3b82f6;
+        }
+
+        .notification.warning .notification-icon {
+            color: #f59e0b;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+            /* Pozwala na shrinking */
+            overflow: hidden;
+        }
+
+        .notification-message {
+            color: #1f2937;
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: 500;
+            max-width: 280px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            margin-left: 8px;
+            flex-shrink: 0;
+            transition: color 0.2s ease;
+        }
+
+        .notification-close:hover {
+            color: #374151;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .notification.removing {
+            animation: slideOutRight 0.3s ease-in-out forwards;
         }
 
         /* Ulepszenia dla sekcji przycisków */
@@ -620,6 +793,14 @@
 </head>
 
 <body>
+
+    <!-- Developer Button -->
+    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+        <button id="devFillButton" type="button"
+            style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            🔧 DEV: Wypełnij formularz
+        </button>
+    </div>
 
     <div class="container">
         <h2>🏢 Dane Główne</h2>
@@ -1072,9 +1253,15 @@
 
         <!-- Spinner ładowania -->
         <div id="loadingSpinner" class="loading-spinner" style="display: none;">
-            <div class="spinner"></div>
-            <div class="loading-text">Przetwarzanie danych...</div>
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <div class="loading-text">Przetwarzanie danych...</div>
+                <div class="loading-subtitle">Proszę czekać...</div>
+            </div>
         </div>
+
+        <!-- Notification Container -->
+        <div id="notificationContainer" class="notification-container"></div>
     </div>
 
 </body>
@@ -1113,11 +1300,11 @@
             })
                 .then(response => response.text())
                 .then(result => {
-                    alert(result);
+                    showNotification(result, "success");
                 })
                 .catch(error => {
                     console.error("Błąd podczas wysyłania formularza:", error);
-                    alert("Wystąpił błąd podczas wysyłania formularza.");
+                    showNotification("Wystąpił błąd podczas wysyłania formularza.", "error");
                 }).finally(() => {
                     hideLoading(); // Ukryj spinner niezależnie od wyniku
                 });
@@ -1268,10 +1455,10 @@
 
         const result = await response.json();
         if (result.success) {
-            alert(`Dokument został utworzony: ${result.url}`);
+            showNotification("Dokument został pomyślnie wygenerowany", "success");
             window.open(result.url, '_blank'); // Otwiera nowy dokument
         } else {
-            alert('Wystąpił błąd podczas generowania dokumentu.');
+            showNotification("Wystąpił błąd podczas generowania dokumentu.", "error");
         }
         hideLoading();
     });
@@ -1308,10 +1495,10 @@
 
         const result = await response.json();
         if (result.success) {
-            alert(`Dokument został utworzony: ${result.url}`);
+            showNotification("Dokument został pomyślnie wygenerowany", "success");
             window.open(result.url, '_blank'); // Otwiera nowy dokument
         } else {
-            alert('Wystąpił błąd podczas generowania dokumentu.');
+            showNotification("Wystąpił błąd podczas generowania dokumentu.", "error");
         }
 
         hideLoading();
@@ -1374,10 +1561,10 @@
             });
 
             const result = await response.text();
-            alert(result);
+            showNotification(result, 'success');
         } catch (error) {
             console.error("Błąd podczas wysyłania formularzy:", error);
-            alert("Wystąpił błąd podczas wysyłania formularzy.");
+            showNotification("Wystąpił błąd podczas wysyłania formularzy.", 'error');
         } finally {
             hideLoading(); // Ukryj spinner niezależnie od wyniku
         }
@@ -1441,14 +1628,14 @@
 
             const result = await response.json();
             if (result.success) {
-                alert(`Dokument został utworzony. Link - ${result.url}`);
+                showNotification(`Dokument został utworzony. Link - ${result.url}`, 'success');
                 window.open(result.url, '_blank');
             } else {
-                alert('Wystąpił błąd podczas generowania dokumentów.');
+                showNotification('Wystąpił błąd podczas generowania dokumentów.', 'error');
             }
         } catch (error) {
             console.error("Błąd podczas generowania dokumentów:", error);
-            alert("Wystąpił błąd podczas generowania dokumentów.");
+            showNotification("Wystąpił błąd podczas generowania dokumentów.", 'error');
         } finally {
             hideLoading(); // Ukryj spinner niezależnie od wyniku
         }
@@ -1456,15 +1643,17 @@
 
     document.getElementById('saveToSheetButton').addEventListener('click', async () => {
         showLoading();
-        const archForm = document.getElementById('archForm');
-        const infoForm = document.getElementById('infoForm');
-        const sheetId = document.getElementById("sheetIdInput").value.trim();
-        const mainDataForm = document.getElementById('mainDataForm');
+        const sheetId = document.getElementById('sheetIdInput').value;
 
         if (!sheetId) {
-            alert("Proszę wpisać ID arkusza przed zapisaniem.");
+            showNotification('Proszę wpisać ID arkusza Google Sheets', 'warning');
+            hideLoading();
             return;
         }
+
+        const archForm = document.getElementById('archForm');
+        const infoForm = document.getElementById('infoForm');
+        const mainDataForm = document.getElementById('mainDataForm');
 
         const archFormData = new FormData(archForm);
         const infoFormData = new FormData(infoForm);
@@ -1500,43 +1689,241 @@
         processCheckboxes('infoForm', infoData);
 
         const combinedData = {
-            sheetId,
-            formType: "both",
+            sheetId: sheetId,
             mainData: mainData,
             architectural: archData,
             informational: infoData
         };
 
-        console.log("Zapisywanie do arkusza Google Sheets:", combinedData);
+        console.log("Zapisywanie do arkusza Google:", combinedData);
 
         try {
-            const response = await fetch("/api/save-to-sheet", {
+            const response = await fetch("/api/append-to-sheet", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(combinedData),
             });
 
             const result = await response.text();
-            alert(result);
+            showNotification(result, 'success');
         } catch (error) {
-            console.error("Błąd podczas zapisu do arkusza:", error);
-            alert("Wystąpił błąd podczas zapisu do arkusza.");
+            console.error("Błąd podczas zapisywania do arkusza:", error);
+            showNotification("Wystąpił błąd podczas zapisywania do arkusza.", 'error');
         } finally {
-            hideLoading(); // Ukryj spinner niezależnie od wyniku
+            hideLoading();
         }
     });
 
-    function showLoading() {
+    // Developer function to fill form with test data
+    function fillFormWithTestData() {
+        // Main Data Form
+        document.getElementById('institution_name').value = 'Urząd Miasta Warszawa, ul. Bankowa 3/5, 00-139 Warszawa';
+        document.getElementById('regon').value = '000331501';
+        document.getElementById('email_secretariat').value = 'sekretariat@um.warszawa.pl';
+        document.getElementById('province').value = 'mazowieckie';
+        document.getElementById('county').value = 'warszawa';
+        document.getElementById('municipality').value = 'Warszawa';
+
+        // Architectural Form
+        document.getElementById('num_buildings').value = '15';
+        document.getElementById('barrier_free_all').value = '10';
+        document.getElementById('barrier_free_partial').value = '3';
+        document.getElementById('barrier_free_none').value = '2';
+        document.getElementById('room_access_all').value = '12';
+        document.getElementById('room_access_none').value = '3';
+
+        // Check some architectural solutions
+        document.querySelector('input[name="room_access_solutions"][value="Rozwiązania architektoniczne"]').checked = true;
+        document.querySelector('input[name="room_access_solutions"][value="Środki techniczne"]').checked = true;
+
+        document.getElementById('layout_info_visual_tactile').value = '8';
+        document.getElementById('layout_info_visual_voice').value = '6';
+        document.getElementById('layout_info_all').value = '4';
+        document.getElementById('dog_access_yes').value = '13';
+        document.getElementById('dog_access_no').value = '2';
+
+        // Check evacuation methods
+        document.querySelector('input[name="evacuation_methods"][value="Procedury ewakuacji lub ratowania"]').checked = true;
+        document.querySelector('input[name="evacuation_methods"][value="Sprzęt lub miejsce do ewakuacji lub ratowania"]').checked = true;
+        document.querySelector('input[name="evacuation_methods"][value="Pracowników przeszkolonych z procedur ewakuacji lub ratowania"]').checked = true;
+
+        // Trigger evacuation update
+        updateEvacuationOptions();
+
+        // Fill evacuation numbers
+        setTimeout(() => {
+            document.getElementById('evacuation_full').value = '10';
+        }, 100);
+
+        document.getElementById('comments').value = 'Budynki są przystosowane do potrzeb osób niepełnosprawnych. Większość posiada windy, rampy i oznaczenia dla osób niewidomych.';
+
+        // Information-Communication Form
+        // Contact methods
+        document.querySelector('input[name="contact_form"][value="TAK"]').checked = true;
+        document.querySelector('input[name="contact_mail"][value="TAK"]').checked = true;
+        document.querySelector('input[name="contact_sms"][value="TAK"]').checked = true;
+        document.querySelector('input[name="contact_av"][value="NIE"]').checked = true;
+        document.querySelector('input[name="contact_fax"][value="TAK"]').checked = true;
+        document.querySelector('input[name="contact_sign_online"][value="NIE"]').checked = true;
+
+        // Sign language interpreter
+        document.querySelector('input[name="contact_sign_personal"][value="TAK"]').checked = true;
+        toggleInput('sign_lang_wrapper', 'sign_lang_time', true);
+        setTimeout(() => {
+            document.getElementById('sign_lang_time').value = '2-3 dni';
+        }, 100);
+
+        document.querySelector('input[name="contact_guide"][value="NIE"]').checked = true;
+
+        // Hearing devices
+        document.querySelector('input[name="hearing_loop"][value="TAK"]').checked = true;
+        toggleInput('hearing_loop_count_wrapper', 'hearing_loop_count', true);
+        setTimeout(() => {
+            document.getElementById('hearing_loop_count').value = '3';
+        }, 100);
+
+        document.querySelector('input[name="fm_systems"][value="TAK"]').checked = true;
+        toggleInput('fm_systems_count_wrapper', 'fm_systems_count', true);
+        setTimeout(() => {
+            document.getElementById('fm_systems_count').value = '2';
+        }, 100);
+
+        document.querySelector('input[name="ir_systems"][value="NIE"]').checked = true;
+        document.querySelector('input[name="bluetooth_systems"][value="TAK"]').checked = true;
+        toggleInput('bluetooth_systems_count_wrapper', 'bluetooth_systems_count', true);
+        setTimeout(() => {
+            document.getElementById('bluetooth_systems_count').value = '5';
+        }, 100);
+
+        // Other devices
+        document.querySelector('input[name="other_devices"][value="TAK"]').checked = true;
+        toggleInputGroup(true, 'other_devices_wrapper', ['other_devices_description', 'other_devices_count']);
+        setTimeout(() => {
+            document.getElementById('other_devices_description').value = 'System nagłośnieniowy z mikroportami, tablice informacyjne z dużą czcionką';
+            document.getElementById('other_devices_count').value = '8';
+        }, 100);
+
+        // Website information
+        document.querySelector('input[name="machine_readable_text"][value="TAK"]').checked = true;
+        document.querySelector('input[name="pjm_video"][value="NIE"]').checked = true;
+        document.querySelector('input[name="easy_read_text"][value="TAK"]').checked = true;
+
+        // Communication requests
+        document.querySelector('input[name="communication_request"][value="TAK"]').checked = true;
+        toggleInputGroup(true, 'communication_details_wrapper', ['communication_count', 'communication_details']);
+        setTimeout(() => {
+            document.getElementById('communication_count').value = '5';
+            document.getElementById('communication_details').value = 'alfabet Braille\'a - 2 razy, tłumacz języka migowego - 2 razy, tekst łatwy do czytania - 1 raz';
+        }, 100);
+
+        // Info comments
+        document.querySelector('textarea[name="comments"]').value = 'Urząd systematycznie wprowadza nowe rozwiązania wspierające komunikację z osobami niepełnosprawnymi. Planowane jest wdrożenie dodatkowych urządzeń wspomagających.';
+
+        // Email
+        document.getElementById('user_email').value = 'test@example.com';
+
+        showNotification('Formularz został wypełniony danymi testowymi!', 'success');
+    }
+
+    // Add event listener for dev button
+    document.getElementById('devFillButton').addEventListener('click', fillFormWithTestData);
+
+    // Notification System
+    function showNotification(message, type = 'info', duration = 5000) {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+
+        notification.innerHTML = `
+            <div class="notification-icon">${icons[type]}</div>
+            <div class="notification-content">
+                <div class="notification-message">${message}</div>
+            </div>
+            
+        `;
+
+        container.appendChild(notification);
+
+        // Auto remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                closeNotification(notification);
+            }, duration);
+        }
+
+        return notification;
+    }
+
+    function closeNotification(notification) {
+        // Sprawdzamy czy to jest przycisk czy element powiadomienia
+        if (notification && notification.classList && notification.classList.contains('notification')) {
+            // To jest element powiadomienia
+            notification.classList.add('removing');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        } else if (notification) {
+            // To jest przycisk - szukamy rodzica
+            const notificationElement = notification.closest('.notification');
+            if (notificationElement) {
+                notificationElement.classList.add('removing');
+                setTimeout(() => {
+                    if (notificationElement.parentNode) {
+                        notificationElement.parentNode.removeChild(notificationElement);
+                    }
+                }, 300);
+            }
+        }
+    }
+
+    // Enhanced Loading functions
+    function showLoading(message = 'Przetwarzanie danych...', subtitle = 'Proszę czekać...') {
         const actionButtons = document.getElementById("bothActionButtons");
         const spinner = document.getElementById("loadingSpinner");
         const mainButton = document.querySelector(".main-action-button");
 
-        if (actionButtons) actionButtons.style.opacity = "0.5";
-        if (mainButton) mainButton.style.opacity = "0.5";
-        if (spinner) spinner.style.display = "flex";
+        // Update loading text
+        const loadingText = spinner.querySelector('.loading-text');
+        const loadingSubtitle = spinner.querySelector('.loading-subtitle');
+        if (loadingText) loadingText.textContent = message;
+        if (loadingSubtitle) loadingSubtitle.textContent = subtitle;
 
-        // Wyłącz wszystkie przyciski podczas ładowania
-        document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        // Show spinner with enhanced styling
+        if (spinner) {
+            spinner.style.display = "flex";
+            spinner.style.opacity = "0";
+            setTimeout(() => {
+                spinner.style.opacity = "1";
+            }, 10);
+        }
+
+        // Dim other elements
+        if (actionButtons) {
+            actionButtons.style.opacity = "0.3";
+            actionButtons.style.pointerEvents = "none";
+        }
+        if (mainButton) {
+            mainButton.style.opacity = "0.3";
+            mainButton.style.pointerEvents = "none";
+        }
+
+        // Disable all interactive elements
+        document.querySelectorAll('button, input, select, textarea').forEach(element => {
+            element.disabled = true;
+            element.style.pointerEvents = 'none';
+        });
+
+        // Prevent scrolling
+        document.body.style.overflow = 'hidden';
     }
 
     function hideLoading() {
@@ -1544,12 +1931,32 @@
         const spinner = document.getElementById("loadingSpinner");
         const mainButton = document.querySelector(".main-action-button");
 
-        if (spinner) spinner.style.display = "none";
-        if (actionButtons) actionButtons.style.opacity = "1";
-        if (mainButton) mainButton.style.opacity = "1";
+        // Hide spinner with animation
+        if (spinner) {
+            spinner.style.opacity = "0";
+            setTimeout(() => {
+                spinner.style.display = "none";
+            }, 200);
+        }
 
-        // Przywróć wszystkie przyciski po zakończeniu ładowania
-        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+        // Restore elements
+        if (actionButtons) {
+            actionButtons.style.opacity = "1";
+            actionButtons.style.pointerEvents = "auto";
+        }
+        if (mainButton) {
+            mainButton.style.opacity = "1";
+            mainButton.style.pointerEvents = "auto";
+        }
+
+        // Re-enable all interactive elements
+        document.querySelectorAll('button, input, select, textarea').forEach(element => {
+            element.disabled = false;
+            element.style.pointerEvents = 'auto';
+        });
+
+        // Restore scrolling
+        document.body.style.overflow = 'auto';
     }
 
 
