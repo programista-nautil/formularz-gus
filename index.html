@@ -954,17 +954,18 @@
             </div>
 
             <div class="comment-header">
-                <label for="comments">💬 Komentarze i uwagi dotyczące dostępności architektonicznej:</label>
-                <button type="button" class="toggle-button" id="comments-helperButton"
-                    onclick="toggleHelperText('comments-helperText', 'comments-helperButton')">Pokaż więcej</button>
+                <label for="arch_comments">💬 Komentarze i uwagi dotyczące dostępności architektonicznej:</label>
+                <button type="button" class="toggle-button" id="arch-comments-helperButton"
+                    onclick="toggleHelperText('arch-comments-helperText', 'arch-comments-helperButton')">Pokaż
+                    więcej</button>
             </div>
-            <p id="comments-helperText" class="small-text hidden">
+            <p id="arch-comments-helperText" class="small-text hidden">
                 📝 Proszę zamieścić tu słowny opis dostępności architektonicznej, wykraczający poza informacje ujęte
                 powyżej – opis ten będzie stanowić część raportu, który są Państwo zobowiązani opublikować na swojej
                 stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
                 Informacji Publicznej – na swojej stronie internetowej.
             </p>
-            <textarea id="comments" name="arch_comments" rows="4"
+            <textarea id="arch_comments" name="arch_comments" rows="4"
                 placeholder="Wpisz dodatkowe uwagi dotyczące dostępności architektonicznej..."></textarea>
 
             <!-- Formularz Architektoniczny -->
@@ -1188,7 +1189,8 @@
 
 
             <div class="comment-header">
-                <label for="comments">💬 Komentarze i uwagi dotyczące dostępności informacyjno-komunikacyjnej:</label>
+                <label for="info_comments">💬 Komentarze i uwagi dotyczące dostępności
+                    informacyjno-komunikacyjnej:</label>
                 <button type="button" class="toggle-button" id="info-comments-helperButton"
                     onclick="toggleHelperText('info-comments-helperText', 'info-comments-helperButton')">Pokaż
                     więcej</button>
@@ -1200,7 +1202,7 @@
                 stronie podmiotowej Biuletynu Informacji Publicznej, a w przypadku braku strony podmiotowej Biuletynu
                 Informacji Publicznej – na swojej stronie internetowej.
             </p>
-            <textarea id="comments" name="comments" rows="4"
+            <textarea id="info_comments" name="comments" rows="4"
                 placeholder="Wpisz dodatkowe uwagi dotyczące dostępności informacyjno-komunikacyjnej..."></textarea>
 
             <!-- <label for="user_email">Podaj adres e-mail:</label>
@@ -1755,7 +1757,7 @@
             document.getElementById('evacuation_full').value = '10';
         }, 100);
 
-        document.getElementById('comments').value = 'Budynki są przystosowane do potrzeb osób niepełnosprawnych. Większość posiada windy, rampy i oznaczenia dla osób niewidomych.';
+        document.getElementById('arch_comments').value = 'Budynki są przystosowane do potrzeb osób niepełnosprawnych. Większość posiada windy, rampy i oznaczenia dla osób niewidomych.';
 
         // Information-Communication Form
         // Contact methods

@@ -42,7 +42,7 @@ function handleArchitecturalForm(data) {
 		evacuation_full,
 		evacuation_partial,
 		evacuation_none,
-		comments,
+		arch_comments, // Zmienione z 'comments' na 'arch_comments'
 	} = data
 
 	// Formatowanie tablic i wartości
@@ -92,7 +92,7 @@ Liczba budynków, w których podmiot prowadzi podstawową działalność i/lub o
    d) Liczba budynków bez ewakuacji: ${formatNumber(evacuation_none)}
 
 Komentarze i uwagi dotyczące dostępności architektonicznej:
-${comments}
+${arch_comments || 'Brak dodatkowych komentarzy'}
 `
 
 	return emailText
