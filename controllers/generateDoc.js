@@ -21,6 +21,7 @@ async function generateDocument(data) {
 			.replace(/\./g, '-')
 
 		const institutionName = data.institution_name || 'Nieznana_Instytucja'
+
 		// Oczyszczenie nazwy instytucji z niedozwolonych znaków
 		const cleanInstitutionName = institutionName
 			.replace(/[^\w\s-]/g, '') // Usuń znaki specjalne

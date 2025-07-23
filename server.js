@@ -77,11 +77,15 @@ app.post('/api/send-form', async (req, res) => {
 
 app.post('/api/generate-document', async (req, res) => {
 	try {
-		console.log('Dane z requesta:', JSON.stringify(req.body, null, 2))
+		console.log('🔍 DEBUG - Pełne dane z requesta:', JSON.stringify(req.body, null, 2))
 
 		let combinedData
 
 		if (req.body.formType === 'both') {
+			console.log('🔍 DEBUG - mainData:', JSON.stringify(req.body.mainData, null, 2))
+			console.log('🔍 DEBUG - architectural:', JSON.stringify(req.body.architectural, null, 2))
+			console.log('🔍 DEBUG - informational:', JSON.stringify(req.body.informational, null, 2))
+
 			// Łączenie danych z obu formularzy w jeden obiekt
 			combinedData = {
 				...req.body.mainData,
@@ -92,6 +96,9 @@ app.post('/api/generate-document', async (req, res) => {
 			// Jeśli generujemy tylko jeden formularz, używamy przekazanych danych
 			combinedData = req.body
 		}
+
+		console.log('🔍 DEBUG - Połączone dane (combinedData):', JSON.stringify(combinedData, null, 2))
+		console.log('🔍 DEBUG - institution_name w combinedData:', combinedData.institution_name)
 
 		// Generowanie dokumentu z połączonymi danymi
 		const docResult = await generateDocument(combinedData)
