@@ -1917,7 +1917,7 @@
         }
 
         // Disable all interactive elements
-        document.querySelectorAll('button, input, select, textarea').forEach(element => {
+        document.querySelectorAll('button').forEach(element => {
             element.disabled = true;
             element.style.pointerEvents = 'none';
         });
