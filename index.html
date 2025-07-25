@@ -158,7 +158,6 @@
             cursor: pointer;
             display: block;
             width: 100%;
-            margin-top: 25px;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -308,7 +307,7 @@
             display: none;
             /* Ukryty domyślnie */
             gap: 10px;
-            margin-top: 10px;
+
             opacity: 0;
             transform: translateY(-10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -611,7 +610,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
 
         .action-button {
@@ -671,8 +670,8 @@
             background: #f8f9fa;
             border: 1px dashed #6c757d;
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 15px;
+
         }
 
         .sheet-input {
@@ -764,7 +763,6 @@
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
-            margin-top: 10px;
             border: 1px solid #e9ecef;
         }
 
@@ -779,7 +777,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 5px;
+
             min-width: 140px;
         }
 
@@ -1402,25 +1400,28 @@
             🚀 Wybierz Działanie
         </button>
 
+
         <div id="bothActionButtons" class="actionButtons">
-            <div class="action-buttons-grid">
-                <button id="sendBothFormsButton" type="button" class="action-button btn-send-mail">
+            <div class="action-buttons-grid" style="grid-template-columns: 1fr 1fr 1fr; ">
+                <button id="sendBothFormsButton" type="button" class="action-button btn-send-mail"
+                    style="height: 100%;">
                     📧 Wyślij Mail
                 </button>
-                <button id="generateBothDocsButton" type="button" class="action-button btn-generate-doc">
+                <button id="generateBothDocsButton" type="button" class="action-button btn-generate-doc"
+                    style="height: 100%;">
                     📄 Wygeneruj Dokument
                 </button>
-            </div>
-
-            <div class="sheet-section">
-                <div style="text-align: center; margin-bottom: 15px; color: #6c757d; font-weight: 600;">
-                    📊 Zapis do Arkusza Google
+                <div class="sheet-section" style=" display: flex; flex-direction: column; justify-content: flex-start;">
+                    <div style="text-align: center; margin-bottom: 15px; color: #6c757d; font-weight: 600;">
+                        📊 Zapis do Arkusza Google
+                    </div>
+                    <input type="text" id="sheetIdInput" placeholder="🔗 Wklej ID arkusza Google Sheets..."
+                        class="sheet-input" style="margin-bottom: 10px;">
+                    <button id="saveToSheetButton" type="button" class="action-button btn-save-sheet"
+                        style="width: 100%; margin-top: 5px;">
+                        💾 Zapisz do Arkusza
+                    </button>
                 </div>
-                <input type="text" id="sheetIdInput" placeholder="🔗 Wklej ID arkusza Google Sheets..."
-                    class="sheet-input">
-                <button id="saveToSheetButton" type="button" class="btn-save-sheet">
-                    💾 Zapisz do Arkusza
-                </button>
             </div>
         </div>
 
